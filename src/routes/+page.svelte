@@ -1,16 +1,18 @@
 <script>
-    import "../app.css";
-    let time = 300;
-    let userTime = 300;
+    let time = 300; // huidige tijd in seconden
+    let userTime = 300; // standaard ingestelde tijd in seconden
     let timer;
+    let isEditing = false; // bepaalt of de gebruiker de tijd aanpast
 
     const startTimer = () => {
         if (!timer) {
             timer = setInterval(() => {
                 if (time > 0) {
                     time -= 1;
+                } else {
+                    stopTimer(); // stopt de timer als deze op 0 komt
                 }
-            }, 1000); // Increment time every second
+            }, 1000);
         }
     };
 
@@ -24,59 +26,51 @@
         time = userTime;
     };
 
-    const secUp = () => {
-        if (!timer) {
-            time += 1;
-            userTime += 1;
+    const toggleTimer = () => {
+        if (timer) {
+            stopTimer();
+        } else {
+            startTimer();
         }
     };
 
-    const secDown = () => {
-        if (!timer) {
-            if (time > 0) {
-                time -= 1;
-                userTime -= 1;
-            }
-        }
+    const toggleEditMode = () => {
+        isEditing = !isEditing;
+        stopTimer(); // timer stoppen als de gebruiker de tijd aanpast
     };
 
-    const minUp = () => {
-        if (!timer) {
-            time += 60;
-            userTime += 60;
+    const adjustTime = (seconds) => {
+        if (isEditing) {
+            time = Math.max(0, time + seconds); // voorkomt negatieve tijd
+            userTime = time;
         }
-    };
-
-    const minDown = () => {
-        if (!timer) {
-            if (time > 60) {
-                time -= 60;
-                userTime -= 60;
-            } else {
-                time = 0;
-                userTime = 0;
-            }
-        }
-    };
-
-    const originalTime = () => {
-        time = 300;
-        userTime = 300;
     };
 </script>
 
-<h1 class="bg-lime-400">Timer!</h1>
-<h2 id="time">{time}</h2>
+<div class="timer-container">
+    <button class="edit-button" on:click={toggleEditMode}>
+        {isEditing ? 'Opslaan' : 'Pas aan'}
+    </button>
 
-<button on:click={secUp}>+ 1 sec</button>
-<button on:click={secDown}>- 1 sec</button>
-<button on:click={minUp}>+ 1 min</button>
-<button on:click={minDown}>- 1 min</button>
-<br>
-<button on:click={startTimer}>Start</button>
-<button on:click={stopTimer}>Stop</button>
-<button on:click={resetTimer}>Reset</button>
-<button on:click={originalTime}>original-time</button>
+    <h2 class="timer-title">Timer</h2>
+    <div class="timer-display">
+        {Math.floor(time / 60).toString().padStart(2, '0')}:
+        {(time % 60).toString().padStart(2, '0')}
+    </div>
+
+    <button class="timer-button" on:click={toggleTimer}>
+        {timer ? 'Stop' : 'Start'}
+    </button>
+
+    {#if isEditing}
+        <div class="adjust-buttons">
+            <button class="adjust-button" on:click={() => adjustTime(60)}>+1 min</button>
+            <button class="adjust-button" on:click={() => adjustTime(-60)}>-1 min</button>
+            <button class="adjust-button" on:click={() => adjustTime(1)}>+1 sec</button>
+            <button class="adjust-button" on:click={() => adjustTime(-1)}>-1 sec</button>
+        </div>
+    {/if}
+</div>
 
 <!-- Navigatiebalk -->
 <nav class="navbar">
@@ -86,7 +80,7 @@
     <a href="/statistics" class="nav-item" aria-label="Statistics">
         <i class="fas fa-chart-bar"></i>
     </a>
-    <a href="/leaderbord" class="nav-item" aria-label="Leaderboard">
+    <a href="/leaderboard" class="nav-item" aria-label="Leaderboard">
         <i class="fas fa-trophy"></i>
     </a>
     <a href="/goals" class="nav-item" aria-label="Goals">
@@ -98,6 +92,94 @@
 </nav>
 
 <style>
+    /* Timer Container */
+    .timer-container {
+        position: relative;
+        background-color: #5b8df8;
+        padding: 20px;
+        border-radius: 20px;
+        width: 300px;
+        margin: 20px auto;
+        text-align: center;
+        color: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .timer-title {
+        font-size: 24px;
+        margin-bottom: 10px;
+        font-family: Arial, sans-serif;
+    }
+
+    .timer-display {
+        font-size: 48px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        font-family: 'Courier New', Courier, monospace;
+        margin-bottom: 20px;
+    }
+
+    .timer-button {
+        background-color: white;
+        color: #5b8df8;
+        border: none;
+        padding: 10px 20px;
+        font-size: 18px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s ease, color 0.3s ease;
+        margin: 5px;
+    }
+
+    .timer-button:hover {
+        background-color: #d1e8ff;
+        color: #3c64c6;
+    }
+
+    .edit-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: white;
+        color: #5b8df8;
+        border: none;
+        padding: 5px 10px;
+        font-size: 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .edit-button:hover {
+        background-color: #d1e8ff;
+        color: #3c64c6;
+    }
+
+    .adjust-buttons {
+        margin-top: 10px;
+    }
+
+    .adjust-button {
+        background-color: white;
+        color: #5b8df8;
+        border: none;
+        padding: 5px 10px;
+        font-size: 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        margin: 5px;
+    }
+
+    .adjust-button:hover {
+        background-color: #d1e8ff;
+        color: #3c64c6;
+    }
+
     .navbar {
         position: fixed;
         bottom: 0;
