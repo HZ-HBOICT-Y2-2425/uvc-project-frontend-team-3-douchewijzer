@@ -1,7 +1,9 @@
 <script>
+    import { goto } from '$app/navigation'; // Import Svelte navigatie
+
     let time = 300; // huidige tijd in seconden
     let userTime = 300; // standaard ingestelde tijd in seconden
-    let timer;
+    let timer = null;
     let isEditing = false; // bepaalt of de gebruiker de tijd aanpast
 
     const startTimer = () => {
@@ -19,11 +21,6 @@
     const stopTimer = () => {
         clearInterval(timer);
         timer = null;
-    };
-
-    const resetTimer = () => {
-        stopTimer();
-        time = userTime;
     };
 
     const toggleTimer = () => {
@@ -45,10 +42,23 @@
             userTime = time;
         }
     };
+
+    const navigateToShowerTimer = (event) => {
+        // Alleen navigeren als de klik niet op een knop of interactief element was
+        if (event.target === event.currentTarget) {
+            goto('/showerTimer'); // Navigeren naar de gewenste pagina
+        }
+    };
 </script>
 
-<div class="timer-container">
-    <button class="edit-button" on:click={toggleEditMode}>
+<div
+    class="timer-container"
+    on:click={navigateToShowerTimer}
+>
+    <button
+        class="edit-button"
+        on:click|stopPropagation={toggleEditMode}
+    >
         {isEditing ? 'Opslaan' : 'Pas aan'}
     </button>
 
@@ -58,16 +68,39 @@
         {(time % 60).toString().padStart(2, '0')}
     </div>
 
-    <button class="timer-button" on:click={toggleTimer}>
+    <button
+        class="timer-button"
+        on:click|stopPropagation={toggleTimer}
+    >
         {timer ? 'Stop' : 'Start'}
     </button>
 
     {#if isEditing}
         <div class="adjust-buttons">
-            <button class="adjust-button" on:click={() => adjustTime(60)}>+1 min</button>
-            <button class="adjust-button" on:click={() => adjustTime(-60)}>-1 min</button>
-            <button class="adjust-button" on:click={() => adjustTime(1)}>+1 sec</button>
-            <button class="adjust-button" on:click={() => adjustTime(-1)}>-1 sec</button>
+            <button
+                class="adjust-button"
+                on:click|stopPropagation={() => adjustTime(60)}
+            >
+                +1 min
+            </button>
+            <button
+                class="adjust-button"
+                on:click|stopPropagation={() => adjustTime(-60)}
+            >
+                -1 min
+            </button>
+            <button
+                class="adjust-button"
+                on:click|stopPropagation={() => adjustTime(1)}
+            >
+                +1 sec
+            </button>
+            <button
+                class="adjust-button"
+                on:click|stopPropagation={() => adjustTime(-1)}
+            >
+                -1 sec
+            </button>
         </div>
     {/if}
 </div>
@@ -103,6 +136,11 @@
         text-align: center;
         color: white;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        cursor: pointer; /* Cursor als pointer voor klikbaarheid */
+    }
+
+    .timer-container button {
+        cursor: auto; /* Zorgt ervoor dat knoppen niet als links werken */
     }
 
     .timer-title {
