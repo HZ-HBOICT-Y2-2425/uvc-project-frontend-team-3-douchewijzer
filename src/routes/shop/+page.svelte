@@ -18,3 +18,42 @@
         <i class="fas fa-cog"></i>
     </a>
 </nav>
+
+<style>
+    .navbar {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #d1e8ff;
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+        border-top: 2px solid #aaa;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-item {
+        color: #4a4a4a;
+        text-decoration: none;
+        font-size: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .nav-item:hover {
+        background-color: #b0d7ff;
+        color: #0066cc;
+    }
+
+    .nav-item i {
+        font-size: 24px;
+    }
+
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
