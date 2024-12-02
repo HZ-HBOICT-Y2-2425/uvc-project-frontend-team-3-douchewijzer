@@ -5,6 +5,7 @@
     let userTime = 300; // standaard ingestelde tijd in seconden
     let timer = null;
     let isEditing = false; // bepaalt of de gebruiker de tijd aanpast
+    let showNotification = false; // bepaalt of de melding wordt getoond
 
     const startTimer = () => {
         if (!timer) {
@@ -13,6 +14,7 @@
                     time -= 1;
                 } else {
                     stopTimer(); // stopt de timer als deze op 0 komt
+                    showNotification = true; // toont melding dat de timer afgelopen is
                 }
             }, 1000);
         }
@@ -39,7 +41,7 @@
     const adjustTime = (seconds) => {
         if (isEditing) {
             time = Math.max(0, time + seconds); // voorkomt negatieve tijd
-            userTime = time;
+            userTime = time; // slaat de laatste waarde op als standaard
         }
     };
 
@@ -48,6 +50,11 @@
         if (event.target === event.currentTarget) {
             goto('/showerTimer'); // Navigeren naar de gewenste pagina
         }
+    };
+
+    const closeNotification = () => {
+        showNotification = false; // verbergt de melding
+        time = userTime; // reset de timer naar de laatste ingestelde waarde
     };
 </script>
 
@@ -105,6 +112,17 @@
     {/if}
 </div>
 
+{#if showNotification}
+    <div class="overlay">
+        <div class="notification">
+            <h2>Timer afgelopen!</h2>
+            <button class="close-notification" on:click={closeNotification}>
+                Sluiten
+            </button>
+        </div>
+    </div>
+{/if}
+
 <style>
     /* Timer Container */
     .timer-container {
@@ -117,7 +135,7 @@
         text-align: center;
         color: white;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        cursor: pointer; /* Cursor als pointer voor klikbaarheid */
+        cursor: pointer;
     }
 
     .timer-container button {
@@ -197,5 +215,51 @@
     .adjust-button:hover {
         background-color: #d1e8ff;
         color: #3c64c6;
+    }
+
+    /* Overlay and Notification */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .notification {
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        font-family: Arial, sans-serif;
+        width: 50%;
+        max-width: 500px;
+    }
+
+    .notification h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #5b8df8;
+    }
+
+    .close-notification {
+        background-color: #5b8df8;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-family: Arial, sans-serif;
+    }
+
+    .close-notification:hover {
+        background-color: #3c64c6;
     }
 </style>
