@@ -30,8 +30,11 @@
         <i class="fas fa-cog"></i>
     </a>
 </nav>
-
-<style>
+<style lang="postcss">
+    :global(body) {
+      background: #CDF5FD ;
+    }
+  
     .back-button {
         position: fixed;
         top: 10px;
