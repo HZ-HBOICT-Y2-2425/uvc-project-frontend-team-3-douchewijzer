@@ -4,122 +4,141 @@
 
 /* Voeg hier je aangepaste CSS-stijlen toe */
 
-    .timer-container {
-        position: relative;
-        background-color: #5b8df8;
-        padding: 20px;
-        border-radius: 20px;
-        width: 350px; /* Vergroot de breedte van de timer-container */
-        margin: 20px auto;
-        text-align: center;
-        color: white;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        cursor: pointer;
-    }
+.timer-container {
+    position: relative;
+    background-color: #5b8df8;
+    padding: 20px;
+    border-radius: 20px;
+    width: 350px; /* Vergroot de breedte van de timer-container */
+    margin: 20px auto;
+    text-align: center;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
 
-    .timer-title {
-        font-size: 24px;
-        margin-bottom: 10px;
-        font-family: Arial, sans-serif;
-    }
+.timer-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+}
 
-    .timer-display {
-        font-size: 48px;
-        font-weight: bold;
-        letter-spacing: 2px;
-        font-family: 'Courier New', Courier, monospace;
-        margin-bottom: 20px;
-    }
+.timer-display {
+    font-size: 48px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-family: 'Courier New', Courier, monospace;
+    margin-bottom: 20px;
+}
 
-    .timer-button {
-        background-color: white;
-        color: #5b8df8;
-        border: none;
-        padding: 10px 20px;
-        font-size: 18px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-family: Arial, sans-serif;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        transition: background-color 0.3s ease, color 0.3s ease;
-        margin: 5px;
-    }
+.timer-button {
+    background-color: white;
+    color: #5b8df8;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin: 5px;
+}
 
-    .timer-button:hover {
-        background-color: #d1e8ff;
-    }
+.timer-button:hover {
+    background-color: #d1e8ff;
+}
 
-    .adjust-buttons {
-        display: flex;
-        justify-content: space-around;
-        margin-top: 20px;
-    }
+.adjust-buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
 
-    .adjust-button {
-        background-color: white;
-        color: #5b8df8;
-        border: none;
-        padding: 10px 20px;
-        font-size: 18px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-family: Arial, sans-serif;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        transition: background-color 0.3s ease, color 0.3s ease;
-        margin: 5px;
-    }
+.adjust-button {
+    background-color: white;
+    color: #5b8df8;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin: 5px;
+}
 
-    .adjust-button:hover {
-        background-color: #d1e8ff;
-    }
+.adjust-button:hover {
+    background-color: #d1e8ff;
+}
 
-    .edit-button {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background-color: white;
-        color: #5b8df8;
-        border: none;
-        padding: 5px 10px;
-        font-size: 14px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-family: Arial, sans-serif;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
+.edit-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: white;
+    color: #5b8df8;
+    border: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
 
-    .edit-button:hover {
-        background-color: #d1e8ff;
-    }
+.edit-button:hover {
+    background-color: #d1e8ff;
+}
 
-    .alert {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        color: #5b8df8;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        z-index: 1000;
-    }
+/* Voeg een overlay toe voor de vervaging van de achtergrond */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparante achtergrondkleur */
+    z-index: 999; /* Zorg ervoor dat de overlay onder de alert ligt */
+}
 
-    .alert button {
-        background-color: #5b8df8;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 10px;
-    }
+/* Stijlen voor de alert */
+.alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    color: #5b8df8;
+    padding: 40px; /* Vergroot de padding */
+    border-radius: 20px; /* Vergroot de border-radius */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    z-index: 1000;
+    width: 80%; /* Vergroot de breedte */
+    max-width: 500px; /* Stel een maximale breedte in */
+}
 
-    .alert button:hover {
-        background-color: #3c64c6;
-    }
+.alert p {
+    font-size: 24px; /* Vergroot de tekstgrootte */
+    margin-bottom: 20px;
+}
+
+.alert button {
+    background-color: #5b8df8;
+    color: white;
+    border: none;
+    padding: 15px 30px; /* Vergroot de padding */
+    font-size: 18px; /* Vergroot de tekstgrootte */
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.alert button:hover {
+    background-color: #3c64c6;
+}
 
 .back-button {
     position: fixed;

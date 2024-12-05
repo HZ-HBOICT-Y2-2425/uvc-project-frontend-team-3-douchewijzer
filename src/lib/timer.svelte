@@ -40,11 +40,9 @@
     };
 
     const secDown = () => {
-        if (!timer) {
-            if (time > 0) {
-                time -= 1;
-                userTime -= 1;
-            }
+        if (!timer && time > 0) {
+            time -= 1;
+            userTime -= 1;
         }
     };
 
@@ -56,14 +54,9 @@
     };
 
     const minDown = () => {
-        if (!timer) {
-            if (time > 60) {
-                time -= 60;
-                userTime -= 60;
-            } else {
-                time = 0;
-                userTime = 0;
-            }
+        if (!timer && time >= 60) {
+            time -= 60;
+            userTime -= 60;
         }
     };
 
@@ -78,8 +71,8 @@
 
     const adjustTime = (amount) => {
         if (!timer) {
-            time += amount;
-            userTime += amount;
+            time = Math.max(0, time + amount);
+            userTime = Math.max(0, userTime + amount);
         }
     };
 
@@ -93,10 +86,12 @@
 
     const closeNotification = () => {
         showNotification = false;
+        resetTimer(); // Reset de timer naar de ingestelde waarde
     };
 </script>
 
 {#if showNotification}
+    <div class="overlay"></div>
     <div class="alert">
         <p>De timer is afgelopen!</p>
         <button on:click={closeNotification}>Sluiten</button>
@@ -127,5 +122,4 @@
 
 <style>
     @import '../lib/app.css';
-    </style>
-    
+</style>
