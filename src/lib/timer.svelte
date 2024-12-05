@@ -77,10 +77,12 @@
     };
 
     const toggleTimer = () => {
-        if (timer) {
-            stopTimer();
-        } else {
-            startTimer();
+        if (!isEditing) {
+            if (timer) {
+                stopTimer();
+            } else {
+                startTimer();
+            }
         }
     };
 
