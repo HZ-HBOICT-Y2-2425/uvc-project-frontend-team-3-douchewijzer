@@ -1,4 +1,6 @@
 <script>
+    import '../lib/app.css';
+    import 'tailwindcss/tailwind.css';
     import { goto } from '$app/navigation';
     const goToHomePage = () => {
         goto('/');
@@ -6,34 +8,30 @@
 </script>
 
 <!-- Terug-pijl knop -->
-<button class="back-button" on:click={goToHomePage} aria-label="Go to home page">
-    <i class="fas fa-arrow-left"></i>
+<button class="fixed top-2 left-2 bg-white text-blue-600 border-none px-4 py-2 text-lg rounded-md cursor-pointer shadow-md z-50 hover:bg-blue-100" on:click={goToHomePage} aria-label="Go to home page">
+    <i class="fas fa-arrow-left text-xl"></i>
 </button>
 
 <slot></slot>
 
 <!-- Navigatiebalk -->
-<nav class="navbar">
-    <a href="/shop" class="nav-item" aria-label="Shop">
+<nav class="fixed bottom-0 w-full bg-blue-100 flex justify-around py-2 border-t-2 border-gray-300 shadow-md">
+    <a href="/shop" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Shop">
         <i class="fas fa-shopping-cart"></i>
     </a>
-    <a href="/statistics" class="nav-item" aria-label="Statistics">
+    <a href="/statistics" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Statistics">
         <i class="fas fa-chart-bar"></i>
     </a>
-    <a href="/leaderboard" class="nav-item" aria-label="Leaderboard">
+    <a href="/leaderboard" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Leaderboard">
         <i class="fas fa-trophy"></i>
     </a>
-    <a href="/goals" class="nav-item" aria-label="Goals">
+    <a href="/goals" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Goals">
         <i class="fas fa-bullseye"></i>
     </a>
-    <a href="/settings" class="nav-item" aria-label="Settings">
+    <a href="/settings" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Settings">
         <i class="fas fa-cog"></i>
     </a>
 </nav>
-
-<style>
-    @import '../lib/app.css';
-</style>
 
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
