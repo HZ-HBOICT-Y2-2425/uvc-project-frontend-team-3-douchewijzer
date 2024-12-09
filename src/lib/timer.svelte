@@ -104,11 +104,14 @@
 </script>
 
 {#if showNotification}
-    <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50"></div>
-    <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-blue-600 p-10 rounded-2xl shadow-lg text-center z-50 w-4/5 max-w-lg">
-        <p class="text-2xl mb-5">De timer is afgelopen!</p>
-        <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={closeNotification}>Sluiten</button>
-    </div>
+<div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50"></div>
+<div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-blue-600 p-10 rounded-2xl shadow-lg text-center z-50 w-4/5 max-w-lg">
+    <p class="text-2xl mb-5">De timer is afgelopen!</p>
+    <p class="text-lg mb-2">Aantal Liter: {liters.toFixed(1)} L</p>
+    <p class="text-lg mb-2">Kosten: €{costs.toFixed(2)}</p>
+    <p class="text-lg mb-5">CO2 Emissie: {co2.toFixed(2)} kg</p>
+    <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={closeNotification}>Sluiten</button>
+</div>
 {/if}
 
 <div class="relative bg-custom-blue p-5 rounded-2xl w-80 mx-auto text-center text-white shadow-md cursor-pointer" on:click>

@@ -6,6 +6,9 @@
 
     const handleTimerEnd = () => {
         console.log('Timer is afgelopen!');
+        liters = 0;
+        costs = 0;
+        co2 = 0;
     };
 
     const handleUpdateLiters = (event) => {
