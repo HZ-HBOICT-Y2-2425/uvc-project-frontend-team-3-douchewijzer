@@ -5,6 +5,9 @@
     let timer = null;
     let isEditing = false;
     let showNotification = false;
+    let liters = 0;
+    let costs = 0;
+    let co2 = 0;
     const dispatch = createEventDispatcher();
 
     const startTimer = () => {
@@ -12,6 +15,7 @@
             timer = setInterval(() => {
                 if (time > 0) {
                     time -= 1;
+                    updateValues();
                 } else {
                     stopTimer();
                     showNotification = true;
@@ -26,9 +30,21 @@
         timer = null;
     };
 
+    const updateValues = () => {
+        liters += 0.1;
+        costs += 0.00116667;
+        co2 += 0.00166667;
+        dispatch('updateLiters', { liters });
+        dispatch('updateCosts', { costs });
+        dispatch('updateCO2', { co2 });
+    };
+
     const resetTimer = () => {
         stopTimer();
         time = userTime;
+        liters = 0;
+        costs = 0;
+        co2 = 0;
         showNotification = false;
     };
 
@@ -60,11 +76,6 @@
         }
     };
 
-    const originalTime = () => {
-        time = 300;
-        userTime = 300;
-    };
-
     const toggleEditing = () => {
         isEditing = !isEditing;
     };
@@ -88,7 +99,7 @@
 
     const closeNotification = () => {
         showNotification = false;
-        resetTimer(); // Reset de timer naar de ingestelde waarde
+        resetTimer();
     };
 </script>
 
@@ -114,10 +125,10 @@
     </button>
     {#if isEditing}
         <div class="flex justify-around mt-5">
-            <button class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(60)}>+1 min</button>
-            <button class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(1)}>+1 sec</button>
-            <button class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(-60)}>-1 min</button>
-            <button class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(-1)}>-1 sec</button>
+            <button class="bg-white text-blue-600 border-solid-3, px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(60)}>+1 min</button>
+            <button class="bg-white text-blue-600 border-none px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(1)}>+1 sec</button>
+            <button class="bg-white text-blue-600 border-none px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(-60)}>-1 min</button>
+            <button class="bg-white text-blue-600 border-none px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(-1)}>-1 sec</button>
         </div>
     {/if}
 </div>
