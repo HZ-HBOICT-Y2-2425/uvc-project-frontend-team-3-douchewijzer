@@ -79,7 +79,7 @@
         <img src="https://via.placeholder.com/40" alt="Avatar" class="w-10 h-10 rounded-full mr-3" />
         <div>
           <p class="text-sm font-medium">{user.name}</p>
-          <p class="text-xs text-gray-500">@username</p>
+          <p class="text-xs text-gray-500">eventueel badge hier?</p>
         </div>
       </div>
       <div class="text-sm font-semibold text-blue-700">
