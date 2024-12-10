@@ -51,20 +51,27 @@
   </section>
 
   <!-- Other users list -->
-  <section class="flex-1 overflow-y-auto bg-blue-50 py-4 px-6 rounded">
-    {#each sortedData.slice(3) as user, idx}
-      <article class="flex justify-between items-center mb-3">
-        <div class="flex items-center">
-          <img src="https://via.placeholder.com/40" alt="Avatar" class="w-10 h-10 rounded-full mr-3" />
-          <div>
-            <p class="text-sm font-medium">{user.name}</p>
-            <p class="text-xs text-gray-500">@username</p>
-          </div>
+  <section
+  class="flex-1 bg-blue-50 py-4 px-6 rounded overflow-y-auto"
+  style="max-height: 400px;" Adjust this height as needed 
+>
+  {#each sortedData.slice(3) as user, idx}
+    <article class="flex justify-between items-center mb-3">
+      <div class="flex items-center">
+        <img
+          src="https://via.placeholder.com/40"
+          alt="Avatar"
+          class="w-10 h-10 rounded-full mr-3"
+        />
+        <div>
+          <p class="text-sm font-medium">{user.name}</p>
+          <p class="text-xs text-gray-500">@username</p>
         </div>
-        <div class="text-sm font-semibold text-blue-700">
-          {user[selectedSort]} {selectedSort === "time" ? "s" : selectedSort === "temperature" ? "°C" : "L"}
-        </div>
-      </article>
-    {/each}
-  </section>
+      </div>
+      <div class="text-sm font-semibold text-blue-700">
+        {user[selectedSort]} {selectedSort === "time" ? "s" : selectedSort === "temperature" ? "°C" : "L"}
+      </div>
+    </article>
+  {/each}
+</section>
 </main>
