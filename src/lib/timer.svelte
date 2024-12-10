@@ -5,6 +5,8 @@
     let timer = null;
     let isEditing = false;
     let showNotification = false;
+    let isPaused = false;
+    let isStarted = false;
     let liters = 0;
     let costs = 0;
     let co2 = 0;
@@ -22,12 +24,15 @@
                     dispatch('timerEnd');
                 }
             }, 1000);
+            isStarted = true;
         }
     };
 
     const stopTimer = () => {
         clearInterval(timer);
         timer = null;
+        showNotification = true;
+        dispatch('timerEnd');
     };
 
     const updateValues = () => {
@@ -46,33 +51,20 @@
         costs = 0;
         co2 = 0;
         showNotification = false;
+        isStarted = false;
+        dispatch('updateLiters', { liters });
+        dispatch('updateCosts', { costs });
+        dispatch('updateCO2', { co2 });
     };
 
-    const secUp = () => {
-        if (!timer) {
-            time += 1;
-            userTime += 1;
-        }
-    };
-
-    const secDown = () => {
-        if (!timer && time > 0) {
-            time -= 1;
-            userTime -= 1;
-        }
-    };
-
-    const minUp = () => {
-        if (!timer) {
-            time += 60;
-            userTime += 60;
-        }
-    };
-
-    const minDown = () => {
-        if (!timer && time >= 60) {
-            time -= 60;
-            userTime -= 60;
+    const pauseTimer = () => {
+        if (timer) {
+            clearInterval(timer);
+            timer = null;
+            isPaused = true;
+        } else if (isPaused) {
+            startTimer();
+            isPaused = false;
         }
     };
 
@@ -87,16 +79,6 @@
         }
     };
 
-    const toggleTimer = () => {
-        if (!isEditing) {
-            if (timer) {
-                stopTimer();
-            } else {
-                startTimer();
-            }
-        }
-    };
-
     const closeNotification = () => {
         showNotification = false;
         resetTimer();
@@ -104,14 +86,14 @@
 </script>
 
 {#if showNotification}
-<div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50"></div>
-<div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-blue-600 p-10 rounded-2xl shadow-lg text-center z-50 w-4/5 max-w-lg">
-    <p class="text-2xl mb-5">De timer is afgelopen!</p>
-    <p class="text-lg mb-2">Aantal Liter: {liters.toFixed(1)} L</p>
-    <p class="text-lg mb-2">Kosten: €{costs.toFixed(2)}</p>
-    <p class="text-lg mb-5">CO2 Emissie: {co2.toFixed(2)} kg</p>
-    <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={closeNotification}>Sluiten</button>
-</div>
+    <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50"></div>
+    <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-blue-600 p-10 rounded-2xl shadow-lg text-center z-50 w-4/5 max-w-lg">
+        <p class="text-2xl mb-5">De timer is afgelopen!</p>
+        <p class="text-lg mb-2">Aantal Liter: {liters.toFixed(1)} L</p>
+        <p class="text-lg mb-2">Kosten: €{costs.toFixed(2)}</p>
+        <p class="text-lg mb-5">CO2 Emissie: {co2.toFixed(2)} kg</p>
+        <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={closeNotification}>Sluiten</button>
+    </div>
 {/if}
 
 <div class="relative bg-custom-blue p-5 rounded-2xl w-80 mx-auto text-center text-white shadow-md cursor-pointer" on:click>
@@ -123,9 +105,19 @@
         {Math.floor(time / 60).toString().padStart(2, '0')}:
         {(time % 60).toString().padStart(2, '0')}
     </div>
-    <button class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100 mb-1" on:click|stopPropagation={toggleTimer}>
-        {timer ? 'Stop' : 'Start'}
-    </button>
+    {#if !isStarted}
+        <button class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100 mb-1" on:click|stopPropagation={startTimer}>
+            Start
+        </button>
+    {/if}
+    {#if isStarted}
+        <button class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100 mb-1" on:click|stopPropagation={stopTimer}>
+            Stop
+        </button>
+        <button class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100 mb-1" on:click|stopPropagation={pauseTimer}>
+            {isPaused ? 'Hervatten' : 'Pauze'}
+        </button>
+    {/if}
     {#if isEditing}
         <div class="flex justify-around mt-5">
             <button class="bg-white text-blue-600 border-solid-3, px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(60)}>+1 min</button>
