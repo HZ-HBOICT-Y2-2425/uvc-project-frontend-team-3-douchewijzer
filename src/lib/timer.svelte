@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte';
+
     let time = 300;
     let userTime = 300;
     let timer = null;
@@ -10,13 +11,31 @@
     let liters = 0;
     let costs = 0;
     let co2 = 0;
+    let temperature = 35; // Default temperatuur
+    let showTemperatureModal = false;
+    let showerTime = 0; // Tijd gedoucht in seconden
     const dispatch = createEventDispatcher();
 
+    const baseCostPerMinute = 0.037; // Basis kosten per minuut bij 35 graden
+    const baseCO2PerMinute = 0.030; // Basis CO2-uitstoot per minuut bij 35 graden (kg)
+
+    const calculateExponentialFactor = (temp) => {
+        const baseTemp = 35;
+        return Math.pow(1.1, temp - baseTemp); // Exponentiële factor
+    };
+
     const startTimer = () => {
+        if (isEditing) return; // Blokkeer de startknop als de timer wordt aangepast
+        showTemperatureModal = true;
+    };
+
+    const confirmTemperature = () => {
+        showTemperatureModal = false;
         if (!timer) {
             timer = setInterval(() => {
                 if (time > 0) {
                     time -= 1;
+                    showerTime += 1; // Verhoog de gedouchte tijd
                     updateValues();
                 } else {
                     stopTimer();
@@ -36,9 +55,12 @@
     };
 
     const updateValues = () => {
-        liters += 0.1;
-        costs += 0.00116667;
-        co2 += 0.00166667;
+        liters += 0.1; // 0.1 liter per seconde
+        const factor = calculateExponentialFactor(temperature);
+
+        costs += baseCostPerMinute * factor / 60; // Kosten per seconde
+        co2 += baseCO2PerMinute * factor / 60; // CO2-uitstoot per seconde
+
         dispatch('updateLiters', { liters });
         dispatch('updateCosts', { costs });
         dispatch('updateCO2', { co2 });
@@ -50,6 +72,7 @@
         liters = 0;
         costs = 0;
         co2 = 0;
+        showerTime = 0; // Reset de gedouchte tijd
         showNotification = false;
         isStarted = false;
         dispatch('updateLiters', { liters });
@@ -85,13 +108,25 @@
     };
 </script>
 
+{#if showTemperatureModal}
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <h2 class="text-xl font-semibold mb-4">Stel de temperatuur in</h2>
+            <input type="range" min="13" max="45" bind:value={temperature} class="w-full mb-2" />
+            <input type="number" min="13" max="45" bind:value={temperature} class="w-full text-center mb-4" />
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg" on:click={confirmTemperature}>Bevestigen</button>
+        </div>
+    </div>
+{/if}
+
 {#if showNotification}
     <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50"></div>
     <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-blue-600 p-10 rounded-2xl shadow-lg text-center z-50 w-4/5 max-w-lg">
         <p class="text-2xl mb-5">De timer is afgelopen!</p>
+        <p class="text-lg mb-5">Tijd Gedoucht: {Math.floor(showerTime / 60)} min {showerTime % 60} sec</p>
         <p class="text-lg mb-2">Aantal Liter: {liters.toFixed(1)} L</p>
         <p class="text-lg mb-2">Kosten: €{costs.toFixed(2)}</p>
-        <p class="text-lg mb-5">CO2 Emissie: {co2.toFixed(2)} kg</p>
+        <p class="text-lg mb-2">CO2 Emissie: {co2.toFixed(2)} kg</p>
         <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={closeNotification}>Sluiten</button>
     </div>
 {/if}
