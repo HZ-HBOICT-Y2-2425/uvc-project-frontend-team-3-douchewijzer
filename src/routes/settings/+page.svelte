@@ -1,1 +1,6 @@
-<h1>settings</h1>
+<script>
+  import { onMount } from 'svelte';
+  import VerifyToken from '$lib/VerifyToken.svelte';
+</script>
+
+<VerifyToken />

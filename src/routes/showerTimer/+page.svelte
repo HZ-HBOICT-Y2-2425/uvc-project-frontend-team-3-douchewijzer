@@ -1,10 +1,13 @@
 <script>
     import Timer from '$lib/Timer.svelte';
-
+    import VerifyToken from '$lib/VerifyToken.svelte';
     const handleTimerEnd = () => {
         console.log('Timer is afgelopen!');
     };
 </script>
+
+<VerifyToken />	
+
 
 <h1>Shower Timer</h1>
 
