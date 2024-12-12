@@ -5,11 +5,21 @@
     const goToHomePage = () => {
         goto('/');
     };
+    const logout = () => {
+        document.cookie = 'jwt=; Max-Age=0; path=/;';
+        localStorage.removeItem('userID');
+        goto('/login');
+    };
 </script>
 
 <!-- Terug-pijl knop -->
 <button class="fixed top-2 left-2 bg-white text-blue-600 border-none px-4 py-2 text-lg rounded-md cursor-pointer shadow-md z-50 hover:bg-blue-100" on:click={goToHomePage} aria-label="Go to home page">
     <i class="fas fa-arrow-left text-xl"></i>
+</button>
+
+<!-- Logout knop -->
+<button class="fixed top-2 right-2 bg-white text-red-600 border-none px-4 py-2 text-lg rounded-md cursor-pointer shadow-md z-50 hover:bg-red-100" on:click={logout} aria-label="Logout">
+    <i class="fas fa-sign-out-alt text-xl"></i>
 </button>
 
 <slot></slot>
