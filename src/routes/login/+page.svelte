@@ -2,11 +2,12 @@
   import { writable } from 'svelte/store';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
+  import { jwtDecode } from "jwt-decode";
+  
   let email = '';
   let password = '';
   let isLoggedIn = writable(false);
   let token = '';
-  let userID = '';
   let error = '';
 
   async function login() {
@@ -22,9 +23,7 @@
         throw new Error(data.error);
       }
       token = data.token;
-      userID = data.userID;
       document.cookie = `jwt=${token}; path=/;`;
-      localStorage.setItem('userID', userID);
       window.location.href = '/goals';
     } catch (err) {
       error = err.message;

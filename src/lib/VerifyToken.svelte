@@ -4,13 +4,12 @@
 
   async function verifyToken() {
     const token = document.cookie.split('; ').find(row => row.startsWith('jwt='));
-    const userID = localStorage.getItem('userID');
-    if (!token || !userID) {
+    if (!token) {
       goto('/login');
       return;
     }
 
-    const response = await fetch(`http://localhost:3010/users/verify-token?userID=${userID}`, {
+    const response = await fetch(`http://localhost:3010/users/verify-token`, {
       headers: {
         'Authorization': `Bearer ${token.split('=')[1]}`
       }
