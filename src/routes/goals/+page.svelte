@@ -23,8 +23,11 @@
       console.log(goals);
     }
   }
-    function claim() {
-        console.log("claim")
+  
+  // @ts-ignore
+    function claim(index) {
+         // Remove the goal at the specified index
+      goals = goals.filter((_, i) => i !== index);
     };
 
     const closePopUp = () => {
@@ -36,7 +39,7 @@
 <br>
 <br>
 
-<div class="flex">
+<div class="flex gap-1">
     <div>
         <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={() => (showPopup = true)}>Doel Maken</button>
     </div>
@@ -75,8 +78,8 @@
 {#if goals.length === 0}
     <p>Loading goals...</p>
 {:else}
-    <ul id="allGoals">  
-        {#each goals as goal}  
+    <div>  
+        {#each goals as goal, index}  
             <div class="bg-gray-300 border-none rounded-lg h-32 w-64 p-4">
                 <p>{goal.description}</p>
                 <div>
@@ -86,9 +89,9 @@
                     <p>{goal.coinValue} coins</p>
                 </div>
                 <div class="float-right bg-blue-400">
-                    <button class="bg-blue-600 text-white" on:click={claim}>Claim</button>
+                    <button class="bg-blue-600 text-white" on:click={() => claim(index)}>Claim</button>
                 </div>
             </div>
         {/each}
-    </ul>
+      </div>
  {/if}
