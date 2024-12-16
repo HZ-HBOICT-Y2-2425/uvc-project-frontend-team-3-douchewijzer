@@ -37,11 +37,27 @@
   </header>
 
   <!-- Filter buttons -->
-  <nav class="bg-[#89CFF3] text-white py-2 flex justify-around rounded">
-    <button class="font-medium" on:click={() => (selectedSort = "liters")}>Liters</button>
-    <button class="font-medium" on:click={() => (selectedSort = "temperature")}>Temperatuur</button>
-    <button class="font-medium" on:click={() => (selectedSort = "time")}>Tijd</button>
+  <nav class="bg-[#CDF5FD] text-black py-2 flex justify-around rounded space-x-2 px-4">
+    <button 
+      class="font-medium py-2 px-4 rounded border border-[#89CFF3] {selectedSort === 'liters' ? 'bg-[#007BFF] text-white' : 'bg-[#89CFF3]'}"
+      on:click={() => (selectedSort = "liters")}
+    >
+      Liters
+    </button>
+    <button 
+      class="font-medium py-2 px-4 rounded border border-[#89CFF3] {selectedSort === 'temperature' ? 'bg-[#007BFF] text-white' : 'bg-[#89CFF3]'}"
+      on:click={() => (selectedSort = "temperature")}
+    >
+      Temperatuur
+    </button>
+    <button 
+      class="font-medium py-2 px-4 rounded border border-[#89CFF3] {selectedSort === 'time' ? 'bg-[#007BFF] text-white' : 'bg-[#89CFF3]'}"
+      on:click={() => (selectedSort = "time")}
+    >
+      Tijd
+    </button>
   </nav>
+  
 
   <!-- Top 3 podium -->
   <section class="flex justify-center items-end bg-[#CDF5FD] py-6 space-x-0 rounded-t-lg">
