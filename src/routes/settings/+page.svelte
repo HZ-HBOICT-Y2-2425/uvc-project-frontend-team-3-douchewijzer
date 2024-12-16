@@ -21,14 +21,6 @@
 
 <h2 class="text-xl font-bold mt-4">Meldingen:</h2>
 <div class="my-2">
-    <p class="mb-2">Streak</p>
-    <label class="relative inline-block w-16 h-8">
-        <input type="checkbox" class="opacity-0 w-0 h-0 peer">
-        <span class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition duration-200 ease-in-out peer-checked:bg-blue-500 peer-focus:ring-2 peer-focus:ring-blue-500"></span>
-        <span class="absolute left-1 bottom-1 bg-white h-6 w-6 rounded-full transition-transform duration-200 ease-in-out peer-checked:transform peer-checked:translate-x-8"></span>
-    </label>
-</div>
-<div class="my-2">
     <p class="mb-2">Leaderboard updates</p>
     <label class="relative inline-block w-16 h-8">
         <input type="checkbox" class="opacity-0 w-0 h-0 peer">
