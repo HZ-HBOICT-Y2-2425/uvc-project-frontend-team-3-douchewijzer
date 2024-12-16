@@ -1,13 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   import VerifyToken from '$lib/VerifyToken.svelte';
-</script>
-<VerifyToken />
-<h1>statistics</h1>
-<h1>statistics</h1>
-
-<script>
-    import SvelteTable from "svelte-table";
+  import SvelteTable from "svelte-table";
     const rows = [
         {
             id: 1,
@@ -105,6 +99,10 @@
     ];
 </script>
 
+<VerifyToken />
+<h1>statistics</h1>
+
+   
 <div class="table"><SvelteTable {columns} {rows}></SvelteTable></div>
 
 <table class="htmlTable2 w-11/12 border-collapse bg-blue-200 rounded-3xl p-8 m-8 border border-black mb-72">
@@ -155,3 +153,8 @@
         </tr>
     </tbody>
 </table>
+
+<div>
+    <img src="src\routes\statistics\a mock graph.png" alt="A mock graph" class="w-11/12 m-8">
+    <img src="src\routes\statistics\a mock graph 2.png" alt="A mock graph" class="w-11/12 m-8">
+</div>
