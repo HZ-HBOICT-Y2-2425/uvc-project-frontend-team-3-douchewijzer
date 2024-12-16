@@ -21,7 +21,7 @@
   let selectedSort: "liters" | "temperature" | "time" = "liters";
 
   $: sortedData = leaderboardData.slice().sort((a, b) => {
-  if (selectedSort === "temperature") {
+  if (selectedSort === "temperature" || selectedSort === "time") {
     return a[selectedSort] - b[selectedSort]; // Ascending for temperature
   }
   return b[selectedSort] - a[selectedSort]; // Descending for others
@@ -30,7 +30,7 @@
   $: headerDescription = {
     liters: "Liters water bespaard",
     temperature: "Laagste temperatuur douchen",
-    time: "Tijd bespaard",
+    time: "Tijd gedoucht",
   }[selectedSort];
 </script>
 
