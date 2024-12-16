@@ -102,9 +102,10 @@
 <VerifyToken />
 <h1>statistics</h1>
    
-<div class="table"><SvelteTable {columns} {rows}></SvelteTable></div>
+<div class="table" style="margin-left:35%"><SvelteTable {columns} {rows}></SvelteTable></div>
 
-<table class="htmlTable2 w-11/12 border-collapse bg-blue-200 rounded-3xl p-8 m-8 border border-black mb-72">
+<table class="htmlTable2 w-11/12 border-collapse bg-blue-200 rounded-3xl p-8 m-8 border border-black mb-72"
+ style="margin-left: 20%; width: 60%; height: 40%;">
     <thead class="columnNames2">
         <tr>
             <th class="border border-gray-300 p-2 bg-blue-900 text-white">Eenheden</th>

@@ -1,10 +1,10 @@
 <script>
     import Timer from '$lib/Timer.svelte';
-  
+    import VerifyToken from '$lib/VerifyToken.svelte';
+
     let liters = 0;
     let costs = 0;
     let co2 = 0;
-    import VerifyToken from '$lib/VerifyToken.svelte';
 
     const handleTimerEnd = () => {
         console.log('Timer is afgelopen!');
@@ -21,14 +21,12 @@
         costs = event.detail.costs.toFixed(2); // Update costs en rond af op 2 decimalen
     };
 
-<VerifyToken />	
-
-<h1>Shower Timer</h1>
-
     const handleUpdateCO2 = (event) => {
         co2 = event.detail.co2.toFixed(2); // Update CO2 en rond af op 2 decimalen
     };
 </script>
+
+<VerifyToken />	
 
 <Timer on:timerEnd={handleTimerEnd} on:updateLiters={handleUpdateLiters} on:updateCosts={handleUpdateCosts} on:updateCO2={handleUpdateCO2} />
 <div class="flex justify-center mt-10">
