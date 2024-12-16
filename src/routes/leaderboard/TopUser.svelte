@@ -7,9 +7,9 @@
 
 <article 
   class="text-center relative"
-  style="background-color: {boxColor}; border-radius: 12px; padding: 20px 15px; margin-right: 0px;"
+  style="background-color: {boxColor}; border-radius: 12px; padding: 20px 15px; margin-right: 0px; width: 120px;" 
 >
-  <!-- Add Crown for First Place -->
+  <!-- Crown for first place -->
   {#if position === 1}
     <img
       src="/crown.png"
@@ -18,25 +18,38 @@
     />
   {/if}
 
-  <!-- Avatar Container -->
-  <div
-    class="flex justify-center items-center mx-auto mb-2"
-    style="width: {position === 1 ? '100px' : position === 2 ? '75px' : '55px'}; height: {position === 1 ? '100px' : position === 2 ? '75px' : '55px'}; border-radius: 50%;"
-  >
-    <img
-      src={`https://via.placeholder.com/${position === 1 ? '100' : position === 2 ? '75' : '55'}`}
-      alt="Avatar"
-      class="rounded-full"
-    />
-  </div>
+   <!-- Avatar Container -->
+   <div
+   class="flex justify-center items-center mx-auto mb-2 relative"
+   style="width: {position === 1 ? '100px' : position === 2 ? '75px' : '55px'}; height: {position === 1 ? '100px' : position === 2 ? '75px' : '55px'}; border-radius: 50%;"
+ >
+   <img
+     src={`https://via.placeholder.com/${position === 1 ? '100' : position === 2 ? '75' : '55'}`}
+     alt="Avatar"
+     class="rounded-full"
+   />
+   <!-- Add Position Number Below Avatar -->
+   <span 
+     class="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs font-bold rounded-full flex items-center justify-center"
+     style="width: {position === 1 ? '30px' : position === 2 ? '25px' : '20px'}; height: {position === 1 ? '30px' : position === 2 ? '25px' : '20px'};"
+   >
+     {position}
+   </span>
+ </div>
 
   <!-- Name and Position -->
-  <p class="text-sm font-medium flex items-center justify-center gap-1 {position === 1 ? 'font-bold' : ''}">
-    <span class="text-xs bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center">
-      {position}
-    </span>
-    {user.name}
-  </p>
+  <div 
+    class="flex items-center justify-center gap-1"
+    style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;"
+  >
+  
+    <p 
+      class="text-sm font-medium mt-2"
+      style="font-size: calc(12px + (1rem - 12px) * min(1, 10 / {user.name.length}))"
+    >
+      {user.name}
+    </p>
+  </div>
 
   <!-- Sort Data -->
   <p class="text-sm text-blue-700 font-semibold">
