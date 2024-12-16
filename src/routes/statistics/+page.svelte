@@ -155,6 +155,6 @@
 </table>
 
 <div>
-    <img src="src\routes\statistics\a mock graph.png" alt="A mock graph" class="w-11/12 m-8">
-    <img src="src\routes\statistics\a mock graph 2.png" alt="A mock graph" class="w-11/12 m-8">
+    <img src="src\routes\statistics\a mock graph.png" alt="A mock graph" class="w-11/12 m-8" style="width: 60%; height: 40%; margin-top: -280px; margin-left: 20%;">
+    <img src="src\routes\statistics\a mock graph 2.png" alt="A mock graph" class="w-11/12 m-8" style="width: 60%; height: 40%; margin-bottom: 3550%; margin-left: 20%;">
 </div>
