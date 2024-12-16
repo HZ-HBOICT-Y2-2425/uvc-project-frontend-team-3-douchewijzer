@@ -1,59 +1,117 @@
-<h1>leaderbord</h1>
+<script lang="ts">
+  import TopUser from './TopUser.svelte';
+  import { onMount } from 'svelte';
+  import VerifyToken from '$lib/VerifyToken.svelte';
 
-<!-- Navigatiebalk -->
-<nav class="navbar">
-    <a href="/shop" class="nav-item" aria-label="Shop">
-        <i class="fas fa-shopping-cart"></i>
-    </a>
-    <a href="/statistics" class="nav-item" aria-label="Statistics">
-        <i class="fas fa-chart-bar"></i>
-    </a>
-    <a href="/leaderboard" class="nav-item" aria-label="Leaderboard">
-        <i class="fas fa-trophy"></i>
-    </a>
-    <a href="/goals" class="nav-item" aria-label="Goals">
-        <i class="fas fa-bullseye"></i>
-    </a>
-    <a href="/settings" class="nav-item" aria-label="Settings">
-        <i class="fas fa-cog"></i>
-    </a>
-</nav>
+  let leaderboardData = [
+    { name: "Eiden", liters: 210, temperature: 22, time: 180 },
+    { name: "Jackson", liters: 160, temperature: 24, time: 140 },
+    { name: "Emma Aria", liters: 130, temperature: 23, time: 150 },
+    { name: "Sebastian", liters: 115, temperature: 21, time: 170 },
+    { name: "Jason", liters: 80, temperature: 25, time: 160 },
+    { name: "Natalie", liters: 74, temperature: 20, time: 190 },
+    { name: "Serenity", liters: 60, temperature: 19, time: 200 },
+    { name: "Hannah", liters: 40, temperature: 18, time: 210 },
+    { name: "Aria", liters: 30, temperature: 17, time: 220 },
+    { name: "Mr. Beast", liters: 20, temperature: 16, time: 230 },
+    { name: "Liam", liters: 10, temperature: 15, time: 240 },
+    { name: "Mila", liters: 5, temperature: 14, time: 250 },
+    { name: "Tyler", liters: 2, temperature: 13, time: 260 },
+  ];
 
-<style>
-    .navbar {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        background-color: #d1e8ff;
-        display: flex;
-        justify-content: space-around;
-        padding: 10px 0;
-        border-top: 2px solid #aaa;
-        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    }
+  // Restrict selectedSort to valid keys
+  let selectedSort: "liters" | "temperature" | "time" = "liters";
 
-    .nav-item {
-        color: #4a4a4a;
-        text-decoration: none;
-        font-size: 28px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
+  $: sortedData = leaderboardData.slice().sort((a, b) => {
+  if (selectedSort === "temperature" || selectedSort === "time") {
+    return a[selectedSort] - b[selectedSort]; // Ascending for temperature
+  }
+  return b[selectedSort] - a[selectedSort]; // Descending for others
+});
 
-    .nav-item:hover {
-        background-color: #b0d7ff;
-        color: #0066cc;
-    }
+  $: headerDescription = {
+    liters: "Liters water bespaard",
+    temperature: "Laagste temperatuur douchen",
+    time: "Tijd gedoucht",
+  }[selectedSort];
+</script>
 
-    .nav-item i {
-        font-size: 24px;
-    }
+<VerifyToken />
 
-</style>
+<main class="min-h-screen bg-blue-50 flex flex-col gap-4">
+  <!-- Leaderboard header -->
+  <header class="bg-[#00A9FF] py-4 px-6 text-white text-center sticky top-0 z-10 rounded">
+    <h1 class="text-lg font-bold">Leaderboard</h1>
+    <p class="text-sm">{headerDescription}</p>
+  </header>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- Filter buttons -->
+  <nav class="bg-[#CDF5FD] text-black py-2 flex justify-around rounded space-x-2 px-4">
+    <button 
+      class="font-medium py-2 px-4 rounded border border-[#89CFF3] {selectedSort === 'liters' ? 'bg-[#007BFF] text-white' : 'bg-[#89CFF3]'}"
+      on:click={() => (selectedSort = "liters")}
+    >
+      Liters
+    </button>
+    <button 
+      class="font-medium py-2 px-4 rounded border border-[#89CFF3] {selectedSort === 'temperature' ? 'bg-[#007BFF] text-white' : 'bg-[#89CFF3]'}"
+      on:click={() => (selectedSort = "temperature")}
+    >
+      Temperatuur
+    </button>
+    <button 
+      class="font-medium py-2 px-4 rounded border border-[#89CFF3] {selectedSort === 'time' ? 'bg-[#007BFF] text-white' : 'bg-[#89CFF3]'}"
+      on:click={() => (selectedSort = "time")}
+    >
+      Tijd
+    </button>
+  </nav>
+  
+
+  <!-- Top 3 podium -->
+  <section class="flex justify-center items-end bg-[#CDF5FD] py-6 space-x-0 rounded-t-lg">
+    <TopUser 
+      user={sortedData[1]} 
+      position={2} 
+      selectedSort={selectedSort} 
+      boxColor="#A0E9FF" 
+    />
+    <TopUser 
+      user={sortedData[0]} 
+      position={1} 
+      selectedSort={selectedSort} 
+      boxColor="#89CFF3" 
+    />
+    <TopUser 
+      user={sortedData[2]} 
+      position={3} 
+      selectedSort={selectedSort} 
+      boxColor="#A0E9FF" 
+    />
+  </section>
+
+
+  <!-- Other users list -->
+  <section
+  class="flex-1 bg-blue-50 py-4 px-6 rounded overflow-y-auto"
+  style="max-height: calc(100vh - 500px);"
+>
+  {#each sortedData.slice(3) as user, idx}
+    <article
+      class="flex justify-between items-center mb-0 p-3 rounded {idx % 2 === 0 ? 'bg-[#A0E9FF]' : 'bg-[#CDF5FD]'}"
+    >
+      <div class="flex items-center">
+        <img src="https://via.placeholder.com/40" alt="Avatar" class="w-10 h-10 rounded-full mr-3" />
+        <div>
+          <p class="text-sm font-medium">{user.name}</p>
+          <p class="text-xs text-gray-500">eventueel badge hier?</p>
+        </div>
+      </div>
+      <div class="text-sm font-semibold text-blue-700">
+        {user[selectedSort]} {selectedSort === "time" ? "s" : selectedSort === "temperature" ? "°C" : "L"}
+      </div>
+    </article>
+  {/each}
+</section>
+</main>
+

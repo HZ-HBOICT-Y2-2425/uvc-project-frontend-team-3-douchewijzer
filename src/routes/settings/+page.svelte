@@ -1,59 +1,48 @@
-<h1>settings</h1>
+ <script>
+  import { onMount } from 'svelte';
+  import VerifyToken from '$lib/VerifyToken.svelte';
+  import DecodeToken from '$lib/DecodeToken.svelte';
+  
+  let userID = '';
+  let name = '';
+</script>
 
-<!-- Navigatiebalk -->
-<nav class="navbar">
-    <a href="/shop" class="nav-item" aria-label="Shop">
-        <i class="fas fa-shopping-cart"></i>
-    </a>
-    <a href="/statistics" class="nav-item" aria-label="Statistics">
-        <i class="fas fa-chart-bar"></i>
-    </a>
-    <a href="/leaderboard" class="nav-item" aria-label="Leaderboard">
-        <i class="fas fa-trophy"></i>
-    </a>
-    <a href="/goals" class="nav-item" aria-label="Goals">
-        <i class="fas fa-bullseye"></i>
-    </a>
-    <a href="/settings" class="nav-item" aria-label="Settings">
-        <i class="fas fa-cog"></i>
-    </a>
-</nav>
+<VerifyToken />
+<DecodeToken bind:userID bind:name />
 
-<style>
-    .navbar {
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        background-color: #d1e8ff;
-        display: flex;
-        justify-content: space-around;
-        padding: 10px 0;
-        border-top: 2px solid #aaa;
-        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    }
+<p class="p-5">User ID: {userID}</p>
+<p class="p-5">Name: {name}</p>
 
-    .nav-item {
-        color: #4a4a4a;
-        text-decoration: none;
-        font-size: 28px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
+<h2 class="text-xl font-bold mt-4">Account:</h2>
+<div class="my-2">(insert image here)</div>
+<img src="" alt="it ain't here boss" class="my-2">
+<div class="my-2">Gebruikersnaam:</div>
+<div class="my-2">Email:</div>
 
-    .nav-item:hover {
-        background-color: #b0d7ff;
-        color: #0066cc;
-    }
+<h2 class="text-xl font-bold mt-4">Meldingen:</h2>
+<div class="my-2">
+    <p class="mb-2">Streak</p>
+    <label class="relative inline-block w-16 h-8">
+        <input type="checkbox" class="opacity-0 w-0 h-0 peer">
+        <span class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition duration-200 ease-in-out peer-checked:bg-blue-500 peer-focus:ring-2 peer-focus:ring-blue-500"></span>
+        <span class="absolute left-1 bottom-1 bg-white h-6 w-6 rounded-full transition-transform duration-200 ease-in-out peer-checked:transform peer-checked:translate-x-8"></span>
+    </label>
+</div>
+<div class="my-2">
+    <p class="mb-2">Leaderboard updates</p>
+    <label class="relative inline-block w-16 h-8">
+        <input type="checkbox" class="opacity-0 w-0 h-0 peer">
+        <span class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition duration-200 ease-in-out peer-checked:bg-blue-500 peer-focus:ring-2 peer-focus:ring-blue-500"></span>
+        <span class="absolute left-1 bottom-1 bg-white h-6 w-6 rounded-full transition-transform duration-200 ease-in-out peer-checked:transform peer-checked:translate-x-8"></span>
+    </label>
+</div>
 
-    .nav-item i {
-        font-size: 24px;
-    }
-
-</style>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<h2 class="text-xl font-bold mt-4">Privacy:</h2>
+<div class="my-2">
+    <p class="mb-2">Uploaden naar leaderboard</p>
+    <label class="relative inline-block w-16 h-8">
+        <input type="checkbox" class="opacity-0 w-0 h-0 peer">
+        <span class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition duration-200 ease-in-out peer-checked:bg-blue-500 peer-focus:ring-2 peer-focus:ring-blue-500"></span>
+        <span class="absolute left-1 bottom-1 bg-white h-6 w-6 rounded-full transition-transform duration-200 ease-in-out peer-checked:transform peer-checked:translate-x-8"></span>
+    </label>
+</div>
