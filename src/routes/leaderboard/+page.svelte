@@ -20,7 +20,12 @@
   // Restrict selectedSort to valid keys
   let selectedSort: "liters" | "temperature" | "time" = "liters";
 
-  $: sortedData = leaderboardData.slice().sort((a, b) => b[selectedSort] - a[selectedSort]);
+  $: sortedData = leaderboardData.slice().sort((a, b) => {
+  if (selectedSort === "temperature") {
+    return a[selectedSort] - b[selectedSort]; // Ascending for temperature
+  }
+  return b[selectedSort] - a[selectedSort]; // Descending for others
+});
 
   $: headerDescription = {
     liters: "Liters water bespaard",
