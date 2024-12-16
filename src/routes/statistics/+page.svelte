@@ -101,7 +101,6 @@
 
 <VerifyToken />
 <h1>statistics</h1>
-
    
 <div class="table"><SvelteTable {columns} {rows}></SvelteTable></div>
 
