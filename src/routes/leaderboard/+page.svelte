@@ -1,5 +1,7 @@
 <script lang="ts">
   import TopUser from './TopUser.svelte';
+  import { onMount } from 'svelte';
+  import VerifyToken from '$lib/VerifyToken.svelte';
 
   let leaderboardData = [
     { name: "Eiden", liters: 210, temperature: 22, time: 180 },
@@ -33,6 +35,8 @@
     time: "Tijd gedoucht",
   }[selectedSort];
 </script>
+
+<VerifyToken />
 
 <main class="min-h-screen bg-blue-50 flex flex-col gap-4">
   <!-- Leaderboard header -->
@@ -110,3 +114,4 @@
   {/each}
 </section>
 </main>
+
