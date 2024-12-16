@@ -19,7 +19,7 @@
 <div class="my-2">Gebruikersnaam:</div>
 <div class="my-2">Email:</div>
 
-<h2 class="text-xl font-bold mt-4">Meldingen:</h2>
+<h2 class="text-xl font-bold mt-4">Toestemming:</h2>
 <div class="my-2">
     <p class="mb-2">Leaderboard updates</p>
     <label class="relative inline-block w-16 h-8">
