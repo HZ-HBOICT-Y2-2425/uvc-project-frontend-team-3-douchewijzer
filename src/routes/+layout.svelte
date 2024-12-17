@@ -38,18 +38,16 @@
     };
 </script>
 
-<header class="bg-[#00A9FF] py-2 px-6 text-white text-center sticky top-0 z-10 rounded flex items-center justify-between">
+<header class="bg-[#00A9FF] py-2 px-6 text-white text-center sticky top-0 z-10 rounded flex items-center justify-between mb-4">
     <img src="/Douche_Wijzer_logo_eersteVersie_achtergrond.png" alt="Logo" class="h-16">
     <!-- Dynamische titel -->
     <h1 class="text-lg font-bold flex-grow text-center">{pageTitle}</h1>
 
-        <button class="bg-white text-gray-700 border-none px-4 py-2 text-lg rounded-md cursor-pointer shadow-md z-50 hover:bg-gray-100" on:click={goToSettingsPage} aria-label="Settings">
-            <i class="fas fa-cog text-xl"></i>
-        </button>
+    <button class="bg-white text-gray-700 border-none px-4 py-2 text-lg rounded-md cursor-pointer shadow-md z-50 hover:bg-gray-100" on:click={goToSettingsPage} aria-label="Settings">
+        <i class="fas fa-cog text-xl"></i>
+    </button>
 </header>
 
-<!-- Voeg padding toe na de header -->
-<div class="pt-4"></div>
 
 <slot></slot>
 
