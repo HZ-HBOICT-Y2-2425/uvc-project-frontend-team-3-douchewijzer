@@ -42,11 +42,10 @@
     <img src="/Douche_Wijzer_logo_eersteVersie_achtergrond.png" alt="Logo" class="h-16">
     <!-- Dynamische titel -->
     <h1 class="text-lg font-bold flex-grow text-center">{pageTitle}</h1>
-    {#if isLoggedIn}
+
         <button class="bg-white text-gray-700 border-none px-4 py-2 text-lg rounded-md cursor-pointer shadow-md z-50 hover:bg-gray-100" on:click={goToSettingsPage} aria-label="Settings">
             <i class="fas fa-cog text-xl"></i>
         </button>
-    {/if}
 </header>
 
 <!-- Voeg padding toe na de header -->
