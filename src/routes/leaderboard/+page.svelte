@@ -69,7 +69,7 @@
   
 
   <!-- Top 3 podium -->
-  <section class="flex justify-center items-end bg-[#CDF5FD] py-6 space-x-0 rounded-t-lg">
+  <section class="flex justify-center items-end white py-6 space-x-0 rounded-t-lg">
     <TopUser 
       user={sortedData[1]} 
       position={2} 

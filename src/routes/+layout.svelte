@@ -38,7 +38,7 @@
 
 <!-- Navigatiebalk -->
 <nav class="fixed bottom-0 w-full bg-blue-100 flex justify-around py-2 border-t-2 border-gray-300 shadow-md">
-    <a href="/shop" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Shop">
+    <a href="/badges" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Shop">
         <i class="fas fa-shopping-cart"></i>
     </a>
     <a href="/statistics" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Statistics">
