@@ -41,8 +41,7 @@
 <main class="min-h-screen bg-blue-50 flex flex-col gap-4">
   <!-- Leaderboard header -->
   <header class="bg-[#00A9FF] py-4 px-6 text-white text-center sticky top-0 z-10 rounded">
-    <h1 class="text-lg font-bold">Leaderboard</h1>
-    <p class="text-sm">{headerDescription}</p>
+    <p class="text-sm" style="margin-top: -20px;">{headerDescription}</p>
   </header>
 
   <!-- Filter buttons -->
