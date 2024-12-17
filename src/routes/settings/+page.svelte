@@ -2,10 +2,14 @@
   import { onMount } from 'svelte';
   import VerifyToken from '$lib/VerifyToken.svelte';
   import DecodeToken from '$lib/DecodeToken.svelte';
+  import LatestBadges from '$lib/LatestBadges.svelte';
+
   
   let userID = '';
   let name = '';
+  let badges = [];
 </script>
+
 
 <VerifyToken />
 <DecodeToken bind:userID bind:name />
@@ -37,4 +41,9 @@
         <span class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition duration-200 ease-in-out peer-checked:bg-blue-500 peer-focus:ring-2 peer-focus:ring-blue-500"></span>
         <span class="absolute left-1 bottom-1 bg-white h-6 w-6 rounded-full transition-transform duration-200 ease-in-out peer-checked:transform peer-checked:translate-x-8"></span>
     </label>
+
+    <section class="bg-blue-100 py-4">
+        <h2 class="text-center text-lg font-semibold mb-2">Recently Earned</h2>
+        <LatestBadges {badges} />
+      </section>
 </div>

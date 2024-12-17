@@ -1,5 +1,5 @@
 <script lang="ts">
-  import TopUser from './TopUser.svelte';
+  import TopUser from '../../lib/TopUser.svelte';
   import { onMount } from 'svelte';
   import VerifyToken from '$lib/VerifyToken.svelte';
 
@@ -39,7 +39,7 @@
 <VerifyToken />
 
 <main class="min-h-screen bg-blue-50 flex flex-col gap-4">
-  <!-- Leaderboard header -->
+  <!-- header -->
   <header class="bg-[#00A9FF] py-4 px-6 text-white text-center sticky top-0 z-10 rounded">
     <h1 class="text-lg font-bold">Leaderboard</h1>
     <p class="text-sm">{headerDescription}</p>
@@ -91,7 +91,7 @@
   </section>
 
 
-  <!-- Other users list -->
+  <!-- Other rankings -->
   <section
   class="flex-1 bg-blue-50 py-4 px-6 rounded overflow-y-auto"
   style="max-height: calc(100vh - 500px);"
