@@ -3,20 +3,25 @@
     import VerifyToken from '$lib/VerifyToken.svelte';
     import DecodeToken from '$lib/DecodeToken.svelte';
     import LatestBadges from '$lib/LatestBadges.svelte';
-    
+
     let badges = [
     {
       itemID: 1,
       itemValue: "4.00",
-      itemImage: "https://via.placeholder.com/40",
+      itemImage: "https://via.placeholder.com/10",
     },
     {
       itemID: 2,
       itemValue: "10.00",
-      itemImage: "https://via.placeholder.com/40",
+      itemImage: "https://via.placeholder.com/20",
     },
     {
       itemID: 3,
+      itemValue: "1.00",
+      itemImage: "https://via.placeholder.com/30",
+    },
+    {
+      itemID: 4,
       itemValue: "1.00",
       itemImage: "https://via.placeholder.com/40",
     },
@@ -61,7 +66,7 @@
   
       <section>
           <h2 class="text-center text-lg font-semibold mb-2">Recently Earned</h2>
-          <LatestBadges {badges} />
+          <LatestBadges {badges} /> 
         </section>
   </div>
   
