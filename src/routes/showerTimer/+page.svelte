@@ -29,7 +29,7 @@
 <VerifyToken />	
 
 <Timer on:timerEnd={handleTimerEnd} on:updateLiters={handleUpdateLiters} on:updateCosts={handleUpdateCosts} on:updateCO2={handleUpdateCO2} />
-<div class="flex justify-center mt-10">
+<div class="flex justify-center mt-0">
     <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-2xl">
         <div class="flex justify-between">
             <div class="flex-1 bg-blue-100 p-4 m-2 rounded-lg text-center">

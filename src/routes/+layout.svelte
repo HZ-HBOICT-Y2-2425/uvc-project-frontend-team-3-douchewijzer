@@ -38,8 +38,8 @@
     };
 </script>
 
-<header class="bg-[#00A9FF] py-2 px-6 text-white text-center sticky top-0 z-10 rounded flex items-center justify-between mb-4">
-    <img src="/Douche_Wijzer_logo_eersteVersie_achtergrond.png" alt="Logo" class="h-16">
+<header class="bg-[#00A9FF] py-2 px-6 text-white text-center sticky top-0 z-10 rounded flex items-center justify-between">
+    <img src="/Douche_Wijzer_Logo.png" alt="Logo" class="h-16">
     <!-- Dynamische titel -->
     <h1 class="text-lg font-bold flex-grow text-center">{pageTitle}</h1>
 
