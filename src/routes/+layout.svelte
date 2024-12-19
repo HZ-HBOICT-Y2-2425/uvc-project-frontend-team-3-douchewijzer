@@ -26,7 +26,7 @@
     // Reageer op URL-wijzigingen
     $: {
         const currentPath = $page.url.pathname;
-        pageTitle = titles[currentPath] || "Page Not Found";
+        pageTitle = titles[currentPath] || "login";
     }
 
     const goToHomePage = () => {
