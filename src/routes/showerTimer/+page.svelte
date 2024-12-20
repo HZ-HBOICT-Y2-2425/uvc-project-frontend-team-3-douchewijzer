@@ -8,6 +8,7 @@
     let costs = 0;
     let co2 = 0;
     let temperature = 0;    
+    let lastTime = 0; // Add lastTime variable
 
     const handleTimerEnd = async () => {
         console.log('Timer is afgelopen!');
@@ -16,6 +17,7 @@
         costs = 0;
         co2 = 0;
         temperature = 0;
+        lastTime = 0; // Reset lastTime
     };
 
     const handleUpdateLiters = (event) => {
@@ -31,17 +33,22 @@
     };
 
     const handleUpdateTemperature = (event) => {
-        temperature = event.detail.temperature; // Update temperature
+        temperature = event.detail.temperature.toFixed(1); // Update temperature
+    };
+
+    const handleUpdateTime = (event) => {
+        lastTime = event.detail.time.toFixed(1); // Update lastTime
     };
 
     const saveShowerResult = async () => {
-    try {
-      const response = await fetch(`http://localhost:3010/statistics/${userID}&temperature=${temperature}&currentCosts=${costs}&waterUsage=${liters}&carbonEmission=${co2}&lastTime=${new Date().toISOString()}`, { // Vervang door je API URL
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+        console.log(`Last time: ${lastTime} seconds`); // Log lastTime in seconds
+        try {
+            const response = await fetch(`http://localhost:3010/statistics/${userID}?temperature=${temperature}&currentCosts=${costs}&waterUsage=${liters}&lastTime=${lastTime}`, { // Add lastTime to URL
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
             if (!response.ok) {
                 throw new Error('Failed to save shower result');
@@ -62,7 +69,8 @@
 
 <VerifyToken />	
 
-<Timer on:timerEnd={handleTimerEnd} on:updateLiters={handleUpdateLiters} on:updateCosts={handleUpdateCosts} on:updateCO2={handleUpdateCO2} on:updateTemperature={handleUpdateTemperature}/>
+<Timer on:timerEnd={handleTimerEnd} on:updateLiters={handleUpdateLiters} on:updateCosts={handleUpdateCosts} on:updateCO2={handleUpdateCO2} on:updateTemperature={handleUpdateTemperature} on:updateTime={handleUpdateTime} /> <!-- Add on:updateTime event -->
+
 <div class="flex justify-center mt-10">
     <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-2xl">
         <div class="flex justify-between">

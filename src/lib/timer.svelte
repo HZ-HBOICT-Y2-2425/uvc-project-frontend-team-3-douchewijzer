@@ -69,6 +69,7 @@
         timer = null;
         showNotification = true;
         dispatch('timerEnd');
+        dispatch('updateTime', { time: showerTime }); // Dispatch updateTime event with showerTime
     };
 
     const updateValues = () => {
@@ -82,6 +83,7 @@
         dispatch('updateCosts', { costs });
         dispatch('updateCO2', { co2 });
         dispatch('updateTemperature', { temperature });
+        dispatch('updateTime', { time: showerTime }); // Ensure updateTime is dispatched here as well
     };
 
     const resetTimer = () => {
