@@ -64,11 +64,13 @@
         }
     };
 
-    const stopTimer = () => {
+    const stopTimer = (dispatchEvent = true) => {
         clearInterval(timer);
         timer = null;
         showNotification = true;
-        dispatch('timerEnd');
+        if (dispatchEvent) {
+            dispatch('timerEnd');
+        }
         dispatch('updateTime', { time: showerTime }); // Dispatch updateTime event with showerTime
     };
 
@@ -86,8 +88,8 @@
         dispatch('updateTime', { time: showerTime }); // Ensure updateTime is dispatched here as well
     };
 
-    const resetTimer = () => {
-        stopTimer();
+    const resetTimer = (dispatchEvent = true) => {
+        stopTimer(dispatchEvent);
         time = userTime;
         liters = 0;
         costs = 0;
@@ -125,7 +127,7 @@
 
     const closeNotification = () => {
         showNotification = false;
-        resetTimer();
+        resetTimer(false); // Do not dispatch timerEnd event when closing notification
     };
 
     let userID = '';
