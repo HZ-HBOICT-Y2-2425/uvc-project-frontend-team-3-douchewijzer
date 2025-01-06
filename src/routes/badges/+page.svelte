@@ -20,17 +20,16 @@
     }
   };
 
-  // Fetch badges on component mount
+  
   onMount(() => {
     fetchBadges();
   });
 </script>
 
-<!-- Header -->
+
 <VerifyToken />
 
 
-<!-- Badges Grid -->
 <section class="p-4 bg-blue-100 grid grid-cols-2 pb-16 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
   {#if badges.length > 0}
     {#each badges as badge}
