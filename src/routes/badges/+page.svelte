@@ -29,9 +29,6 @@
 <!-- Header -->
 <VerifyToken />
 
-<header class="bg-[#00A9FF] py-4 px-6 text-white text-center sticky top-0 z-10 rounded">
-  <h1 class="text-2xl font-bold">Jouw Badges</h1>
-</header>
 
 <!-- Badges Grid -->
 <section class="p-4 bg-blue-100 grid grid-cols-2 pb-16 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
