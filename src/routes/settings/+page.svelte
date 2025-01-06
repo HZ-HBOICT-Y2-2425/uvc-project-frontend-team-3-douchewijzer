@@ -12,6 +12,9 @@
     let email = '';
     let coins = 0;
 
+    let minutes = Math.floor(timerSetting / 60);
+    let seconds = timerSetting % 60;
+
     const fetchPreferences = async () => {
         try {
             const response = await fetch(`http://localhost:3010/users/${userID}/preferences`);
@@ -19,6 +22,8 @@
             leaderboardNotification = data.leaderbordNotificationPreference;
             uploadPreference = data.leaderbordUploadPreference;
             timerSetting = data.timerSetting;
+            minutes = Math.floor(timerSetting / 60);
+            seconds = timerSetting % 60;
         } catch (error) {
             console.error('Error fetching preferences:', error);
         }
@@ -43,6 +48,17 @@
         } catch (error) {
             console.error(`Error updating ${preference}:`, error);
         }
+    };
+
+    const updateTimerSetting = () => {
+        timerSetting = (parseInt(minutes) * 60) + parseInt(seconds);
+        updatePreference('timerSetting', timerSetting);
+    };
+
+    const formatTime = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}m ${remainingSeconds}s`;
     };
 
     onMount(() => {
@@ -93,7 +109,12 @@
 
     <h2 class="text-2xl font-bold mt-6 mb-4">Timer Setting</h2>
     <div class="my-4 p-6 border rounded-lg shadow-md bg-white">
-        <input type="number" class="border rounded p-2 w-24 text-center" bind:value={timerSetting} on:change={() => updatePreference('timerSetting', timerSetting)} />
+        <div class="flex items-center space-x-2">
+            <input type="number" class="border rounded p-2 w-16 text-center" bind:value={minutes} min="0" on:change={updateTimerSetting} />
+            <span class="text-lg">min</span>
+            <input type="number" class="border rounded p-2 w-16 text-center" bind:value={seconds} min="0" max="59" on:change={updateTimerSetting} />
+            <span class="text-lg">sec</span>
+        </div>
     </div>
 
     <button on:click={logout} class="bg-red-600 text-white px-4 py-2 rounded-md mt-6">Logout</button>
