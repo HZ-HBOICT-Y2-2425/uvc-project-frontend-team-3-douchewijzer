@@ -2,18 +2,18 @@
   import { onMount } from 'svelte';
   import VerifyToken from '$lib/VerifyToken.svelte';
 
-  let badges = []; // Store the badges fetched from the backend
-  let errorMessage = ''; // Error message for failed fetch
+  let badges = []; 
+  let errorMessage = ''; 
 
-  // Fetch badges from the backend
+ 
   const fetchBadges = async () => {
     try {
-      const response = await fetch('http://localhost:3000/badges'); // Replace with your actual backend endpoint
+      const response = await fetch('http://localhost:3010/badges');
       if (!response.ok) {
         throw new Error(`Failed to fetch badges: ${response.statusText}`);
       }
-      const data = await response.json(); // Assuming the backend returns an array of badges
-      badges = data; // Store the fetched badges
+      const data = await response.json(); 
+      badges = data; 
     } catch (error) {
       console.error('Error fetching badges:', error);
       errorMessage = 'Failed to load badges.';
@@ -40,6 +40,7 @@
       <div class="bg-white rounded-lg shadow-md overflow-hidden p-2 flex flex-col items-center aspect-w-1 aspect-h-1">
         <img src={badge.badgeImage || 'placeholder.png'} alt="Badge" class="w-full h-full object-cover mb-2" />
         <p class="text-sm font-semibold text-center">Badge ID: {badge.badgeID}</p>
+        <p class="text-sm font-semibold text-center">Badge Name: {badge.badgeName}</p>
         <p class="text-xs text-gray-500">{badge.badgeDescription}</p>
       </div>
     {/each}
