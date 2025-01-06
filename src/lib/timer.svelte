@@ -137,7 +137,7 @@
 <DecodeToken bind:userID bind:name />
 
 {#if showTemperatureModal}
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
         <div class="bg-white p-6 rounded-lg shadow-lg text-center">
             <h2 class="text-xl font-semibold mb-4">Stel de temperatuur in</h2>
             <input type="range" min="13" max="45" bind:value={temperature} class="w-full mb-2" />
@@ -160,7 +160,7 @@
     </div>
 {/if}
 
-<div class="relative bg-custom-blue p-5 rounded-2xl w-80 mx-auto text-center text-white shadow-md cursor-pointer" on:click>
+<div class="relative bg-custom-blue p-5 rounded-2xl w-80 mx-auto text-center text-white shadow-md cursor-pointer mt-4" on:click>
     <button class="absolute top-2 right-2 bg-white text-blue-600 border-none px-2 py-1 text-sm rounded-md cursor-pointer shadow-sm hover:bg-blue-100" on:click|stopPropagation={toggleEditing}>
         {isEditing ? 'Opslaan' : 'Pas aan'}
     </button>
