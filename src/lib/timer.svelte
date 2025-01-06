@@ -1,8 +1,10 @@
 <script>
     import { createEventDispatcher } from 'svelte';
+    import { onMount } from 'svelte';
+    import DecodeToken from './DecodeToken.svelte';
 
-    let time = 300;
-    let userTime = 300;
+    let time = 0;
+    let userTime = 0;
     let timer = null;
     let isEditing = false;
     let showNotification = false;
@@ -23,6 +25,21 @@
         const baseTemp = 35;
         return Math.pow(1.1, temp - baseTemp); // Exponentiële factor
     };
+
+    const fetchTimerSetting = async () => {
+        try {
+            const response = await fetch(`http://localhost:3010/users/${userID}/preferences`); // Vervang door je API URL
+            const data = await response.json();
+            time = data.timerSetting;
+            userTime = data.timerSetting;
+        } catch (error) {
+            console.error('Error fetching timer setting:', error);
+        }
+    };
+
+    onMount(() => {
+        fetchTimerSetting();
+    });
 
     const startTimer = () => {
         if (isEditing) return; // Blokkeer de startknop als de timer wordt aangepast
@@ -47,11 +64,14 @@
         }
     };
 
-    const stopTimer = () => {
+    const stopTimer = (dispatchEvent = true) => {
         clearInterval(timer);
         timer = null;
         showNotification = true;
-        dispatch('timerEnd');
+        if (dispatchEvent) {
+            dispatch('timerEnd');
+        }
+        dispatch('updateTime', { time: showerTime }); // Dispatch updateTime event with showerTime
     };
 
     const updateValues = () => {
@@ -64,10 +84,12 @@
         dispatch('updateLiters', { liters });
         dispatch('updateCosts', { costs });
         dispatch('updateCO2', { co2 });
+        dispatch('updateTemperature', { temperature });
+        dispatch('updateTime', { time: showerTime }); // Ensure updateTime is dispatched here as well
     };
 
-    const resetTimer = () => {
-        stopTimer();
+    const resetTimer = (dispatchEvent = true) => {
+        stopTimer(dispatchEvent);
         time = userTime;
         liters = 0;
         costs = 0;
@@ -78,6 +100,7 @@
         dispatch('updateLiters', { liters });
         dispatch('updateCosts', { costs });
         dispatch('updateCO2', { co2 });
+        dispatch('updateTemperature', { temperature });
     };
 
     const pauseTimer = () => {
@@ -104,9 +127,14 @@
 
     const closeNotification = () => {
         showNotification = false;
-        resetTimer();
+        resetTimer(false); // Do not dispatch timerEnd event when closing notification
     };
+
+    let userID = '';
+    let name = '';
 </script>
+
+<DecodeToken bind:userID bind:name />
 
 {#if showTemperatureModal}
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -127,6 +155,7 @@
         <p class="text-lg mb-2">Aantal Liter: {liters.toFixed(1)} L</p>
         <p class="text-lg mb-2">Kosten: €{costs.toFixed(2)}</p>
         <p class="text-lg mb-2">CO2 Emissie: {co2.toFixed(2)} kg</p>
+        <p class="text-lg mb-5">Temperatuur: {temperature} °C</p>
         <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={closeNotification}>Sluiten</button>
     </div>
 {/if}
@@ -156,8 +185,11 @@
     {#if isEditing}
         <div class="flex justify-around mt-5">
             <button class="bg-white text-blue-600 border-solid-3, px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(60)}>+1 min</button>
+            
             <button class="bg-white text-blue-600 border-none px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(1)}>+1 sec</button>
+
             <button class="bg-white text-blue-600 border-none px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(-60)}>-1 min</button>
+
             <button class="bg-white text-blue-600 border-none px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(-1)}>-1 sec</button>
         </div>
     {/if}
