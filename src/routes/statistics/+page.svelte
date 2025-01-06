@@ -100,6 +100,7 @@
 </script>
 
 <VerifyToken />
+<h1>statistics</h1>
    
 <div class="table" style="margin-left:35%"><SvelteTable {columns} {rows}></SvelteTable></div>
 
