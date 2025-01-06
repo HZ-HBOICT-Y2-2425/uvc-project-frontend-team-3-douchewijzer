@@ -5,4 +5,3 @@
 
 <VerifyToken />
 
-<h1>goals</h1>

@@ -24,9 +24,10 @@
    style="width: {position === 1 ? '100px' : position === 2 ? '75px' : '55px'}; height: {position === 1 ? '100px' : position === 2 ? '75px' : '55px'}; border-radius: 50%;"
  >
    <img
-     src={`https://via.placeholder.com/${position === 1 ? '100' : position === 2 ? '75' : '55'}`}
+     src='/Test_Image.png'
      alt="Avatar"
      class="rounded-full"
+     style="width: 100%; height: 100%; object-fit: cover;"
    />
    <!-- Add Position Number Below Avatar -->
    <span 

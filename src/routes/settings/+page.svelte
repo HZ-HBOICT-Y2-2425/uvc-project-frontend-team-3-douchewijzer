@@ -1,35 +1,30 @@
-<script lang="ts">
+
+
+
+
+
+<script>
     import { onMount } from 'svelte';
     import VerifyToken from '$lib/VerifyToken.svelte';
     import DecodeToken from '$lib/DecodeToken.svelte';
+    import { goto } from '$app/navigation';
     import LatestBadges from '$lib/LatestBadges.svelte';
-
+    
+    let userID = '';
+    let name = '';
     let badges = [
     {
       itemID: 1,
       itemValue: "4.00",
       itemImage: "https://via.placeholder.com/10",
-    },
-    {
-      itemID: 2,
-      itemValue: "10.00",
-      itemImage: "https://via.placeholder.com/20",
-    },
-    {
-      itemID: 3,
-      itemValue: "1.00",
-      itemImage: "https://via.placeholder.com/30",
-    },
-    {
-      itemID: 4,
-      itemValue: "1.00",
-      itemImage: "https://via.placeholder.com/40",
-    },
+    }
   ];
-
   
-    let userID: string = '';
-    let name: string = '';
+    const logout = () => {
+      document.cookie = 'jwt=; Max-Age=0; path=/;';
+      localStorage.removeItem('userID');
+      goto('/login');
+    };
 
   </script>
   
@@ -63,6 +58,7 @@
           <span class="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition duration-200 ease-in-out peer-checked:bg-blue-500 peer-focus:ring-2 peer-focus:ring-blue-500"></span>
           <span class="absolute left-1 bottom-1 bg-white h-6 w-6 rounded-full transition-transform duration-200 ease-in-out peer-checked:transform peer-checked:translate-x-8"></span>
       </label>
+
   
       <section>
           <h2 class="text-center text-lg font-semibold mb-2">Recently Earned</h2>

@@ -3,55 +3,69 @@
     import 'tailwindcss/tailwind.css';
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
+    import { page } from '$app/stores';
 
     let isLoggedIn = false;
+    let pageTitle = 'Leaderboard';
 
-    const goToHomePage = () => {
-        goto('/');
-    };
-
-    const logout = () => {
-        document.cookie = 'jwt=; Max-Age=0; path=/;';
-        localStorage.removeItem('userID');
-        goto('/login');
+    // Definieer titels op basis van de routes
+    const titles = {
+        "/": "Home",
+        "/showerTimer": "Shower Timer",
+        "/goals": "Goals",
+        "/leaderboard": "Leaderboard",
+        "/statistics": "Statistics",
+        "/settings": "Settings",
     };
 
     onMount(() => {
         const token = document.cookie.split('; ').find(row => row.startsWith('jwt='));
         isLoggedIn = !!token;
     });
+
+    // Reageer op URL-wijzigingen
+    $: {
+        const currentPath = $page.url.pathname;
+        pageTitle = titles[currentPath] || "login";
+    }
+
+    const goToHomePage = () => {
+        goto('/');
+    };
+
+    const goToSettingsPage = () => {
+        goto('/settings');
+    };
 </script>
 
-<!-- Terug-pijl knop -->
-<button class="fixed top-2 left-2 bg-white text-blue-600 border-none px-4 py-2 text-lg rounded-md cursor-pointer shadow-md z-50 hover:bg-blue-100" on:click={goToHomePage} aria-label="Go to home page">
-    <i class="fas fa-arrow-left text-xl"></i>
-</button>
+<header class="bg-[#00A9FF] py-2 px-6 text-white text-center sticky top-0 z-10 rounded flex items-center justify-between">
+    <img src="/Douche_Wijzer_Logo.png" alt="Logo" class="h-16">
+    <!-- Dynamische titel -->
+    <h1 class="text-lg font-bold flex-grow text-center">{pageTitle}</h1>
 
-<!-- Logout knop -->
-{#if isLoggedIn}
-    <button class="fixed top-2 right-2 bg-white text-red-600 border-none px-4 py-2 text-lg rounded-md cursor-pointer shadow-md z-50 hover:bg-red-100" on:click={logout} aria-label="Logout">
-        <i class="fas fa-sign-out-alt text-xl"></i>
+    <button class="bg-white text-gray-700 border-none px-4 py-2 text-lg rounded-md cursor-pointer shadow-md z-50 hover:bg-gray-100" on:click={goToSettingsPage} aria-label="Settings">
+        <i class="fas fa-cog text-xl"></i>
     </button>
-{/if}
+</header>
+
 
 <slot></slot>
 
-<!-- Navigatiebalk -->
 <nav class="fixed bottom-0 w-full bg-blue-100 flex justify-around py-2 border-t-2 border-gray-300 shadow-md">
-    <a href="/badges" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Shop">
-        <i class="fas fa-shopping-cart"></i>
+    <a href="/" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Home">
+        <i class="fas fa-home"></i>
     </a>
-    <a href="/statistics" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Statistics">
-        <i class="fas fa-chart-bar"></i>
-    </a>
-    <a href="/leaderboard" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Leaderboard">
-        <i class="fas fa-trophy"></i>
+    <a href="/showerTimer" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Shower">
+        <i class="fas fa-shower"></i>
     </a>
     <a href="/goals" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Goals">
         <i class="fas fa-bullseye"></i>
     </a>
-    <a href="/settings" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Settings">
-        <i class="fas fa-cog"></i>
+    <a href="/leaderboard" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Leaderboard">
+        <i class="fas fa-trophy"></i>
+    </a>
+    <a href="/statistics" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Statistics">
+        <i class="fas fa-chart-bar"></i>
     </a>
 </nav>
 

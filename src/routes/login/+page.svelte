@@ -24,7 +24,7 @@
       }
       token = data.token;
       document.cookie = `jwt=${token}; path=/;`;
-      window.location.href = '/goals';
+      window.location.href = '/';
     } catch (err) {
       error = err.message;
     }
