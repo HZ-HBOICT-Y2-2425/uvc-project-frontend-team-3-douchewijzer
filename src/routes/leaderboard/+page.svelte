@@ -1,7 +1,7 @@
 <script lang="ts">
-  import TopUser from './TopUser.svelte';
-  import VerifyToken from '$lib/VerifyToken.svelte';
+  import TopUser from '../../lib/TopUser.svelte';
   import { onMount } from 'svelte';
+  import VerifyToken from '$lib/VerifyToken.svelte';
 
   let leaderboardData = [
     { name: "Eiden", liters: 210, temperature: 22, time: 180 },
