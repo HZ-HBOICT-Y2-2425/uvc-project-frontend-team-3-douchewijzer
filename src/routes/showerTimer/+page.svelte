@@ -44,7 +44,7 @@
         console.log(`Last time: ${lastTime} seconds`); // Log lastTime in seconds
         try {
             const response = await fetch(`http://localhost:3010/statistics/${userID}?temperature=${temperature}&currentCosts=${costs}&waterUsage=${liters}&lastTime=${lastTime}`, { // Add lastTime to URL
-                method: 'PUT',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 }
