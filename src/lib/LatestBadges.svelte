@@ -32,10 +32,10 @@
       <a
         href="/badges"
         class="absolute border-2 border-white rounded-full overflow-hidden shadow-md transition-transform hover:scale-105"
-        style="width: 48px; height: 48px; left: {i * 40}px; z-index: {3 - i};"
+        style="width: 78px; height: 78px; left: {i * 85}px; z-index: {3 - i};"
       >
         <img
-          src={badge.badgeImage} 
+          src="/Douche_Wijzer_Logo.png" 
           alt={badge.badgeName}
           class="w-full h-full object-cover"
         />
