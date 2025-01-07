@@ -48,7 +48,7 @@ let name = '';
         type="hidden"
         name="userID"
         value={userID}
-      />
+    />
     <input
         type="text"
         name= "goalDescription"
@@ -108,7 +108,15 @@ let name = '';
                 <form method="POST" action="?/claimGoal">
                   <input type="hidden" name="_method" value="DELETE" />
                   <input type="hidden" name="goalID" value={goal.goalID} />
-                  <button type="submit" class="bg-blue-600 text-white border-none px-3 py-1 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800 float-right">Claim</button>
+                  <button
+                  class="bg-blue-600 text-white border-none px-3 py-1 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800 float-right
+                    {goal.goalProgress < goal.goalAmount ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-800'}"
+                  on:click={() => claim(index)}
+                  aria-label="Claim Goal"
+                  disabled = {goal.goalProgress < goal.goalAmount} 
+                >
+                  Claim
+                </button>
                 </form>
             </div>
             </div>

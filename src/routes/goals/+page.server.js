@@ -35,7 +35,7 @@ export const actions = {
         console.log(goalDescription)
     
         try {
-          const res = await fetch(`http://localhost:3010/goalsMilestones/goals?userID=${id}&goalDescription=${goalDescription}&goalAmount=${goalAmount}&coinValue=${coinValue}`, {
+          const res = await fetch(`http://localhost:3010/goalsMilestones/goals?userID=${id}&goalDescription=${goalDescription}&goalProgress=6&goalAmount=${goalAmount}&coinValue=${coinValue}`, {
             method: 'POST',
           });
     
