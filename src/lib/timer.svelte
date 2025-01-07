@@ -8,6 +8,7 @@
     let timer = null;
     let isEditing = false;
     let showNotification = false;
+    let showEndOfTimerNotification = false; // Nieuwe variabele voor de extra melding
     let isPaused = false;
     let isStarted = false;
     let liters = 0;
@@ -16,6 +17,8 @@
     let temperature = 35; // Default temperatuur
     let showTemperatureModal = false;
     let showerTime = 0; // Tijd gedoucht in seconden
+    let isManuallyStopped = false; // Nieuwe variabele om handmatige stop bij te houden
+    let endOfTimerNotificationShown = false; // Variabele om bij te houden of de melding al is getoond
     const dispatch = createEventDispatcher();
 
     const baseCostPerMinute = 0.037; // Basis kosten per minuut bij 35 graden
@@ -52,13 +55,12 @@
             timer = setInterval(() => {
                 if (time > 0) {
                     time -= 1;
-                    showerTime += 1; // Verhoog de gedouchte tijd
-                    updateValues();
-                } else {
-                    stopTimer();
-                    showNotification = true;
-                    dispatch('timerEnd');
+                } else if (time === 0 && !endOfTimerNotificationShown) {
+                    showEndOfTimerNotification = true; // Toon de extra melding
+                    endOfTimerNotificationShown = true; // Zet de variabele om te voorkomen dat de melding opnieuw wordt getoond
                 }
+                showerTime += 1; // Verhoog de gedouchte tijd
+                updateValues();
             }, 1000);
             isStarted = true;
         }
@@ -67,8 +69,8 @@
     const stopTimer = (dispatchEvent = true) => {
         clearInterval(timer);
         timer = null;
-        showNotification = true;
         if (dispatchEvent) {
+            showNotification = true;
             dispatch('timerEnd');
         }
         dispatch('updateTime', { time: showerTime }); // Dispatch updateTime event with showerTime
@@ -96,6 +98,8 @@
         co2 = 0;
         showerTime = 0; // Reset de gedouchte tijd
         showNotification = false;
+        showEndOfTimerNotification = false; // Reset de extra melding
+        endOfTimerNotificationShown = false; // Reset de variabele om de melding opnieuw te kunnen tonen
         isStarted = false;
         dispatch('updateLiters', { liters });
         dispatch('updateCosts', { costs });
@@ -109,8 +113,18 @@
             timer = null;
             isPaused = true;
         } else if (isPaused) {
-            startTimer();
+            timer = setInterval(() => {
+                if (time > 0) {
+                    time -= 1;
+                } else if (time === 0 && !endOfTimerNotificationShown) {
+                    showEndOfTimerNotification = true; // Toon de extra melding
+                    endOfTimerNotificationShown = true; // Zet de variabele om te voorkomen dat de melding opnieuw wordt getoond
+                }
+                showerTime += 1; // Verhoog de gedouchte tijd
+                updateValues();
+            }, 1000);
             isPaused = false;
+            isStarted = true;
         }
     };
 
@@ -128,6 +142,10 @@
     const closeNotification = () => {
         showNotification = false;
         resetTimer(false); // Do not dispatch timerEnd event when closing notification
+    };
+
+    const closeEndOfTimerNotification = () => {
+        showEndOfTimerNotification = false;
     };
 
     let userID = '';
@@ -160,7 +178,16 @@
     </div>
 {/if}
 
-<div class="relative bg-custom-blue p-5 rounded-2xl w-80 mx-auto text-center text-white shadow-md cursor-pointer mt-4" on:click>
+{#if showEndOfTimerNotification}
+    <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50"></div>
+    <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-blue-600 p-10 rounded-2xl shadow-lg text-center z-50 w-4/5 max-w-lg">
+        <p class="text-2xl mb-5">Je timer is afgegaan druk op stop als je klaar bent met douchen</p>
+        <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={() => { isManuallyStopped = true; stopTimer(); closeEndOfTimerNotification(); }}>Stop</button>
+    </div>
+{/if}
+
+<div class="relative bg-custom-blue p-5 rounded-2xl w-80 mx-auto text-center text-white shadow-md cursor-pointer" on:click>
+
     <button class="absolute top-2 right-2 bg-white text-blue-600 border-none px-2 py-1 text-sm rounded-md cursor-pointer shadow-sm hover:bg-blue-100" on:click|stopPropagation={toggleEditing}>
         {isEditing ? 'Opslaan' : 'Pas aan'}
     </button>
@@ -175,7 +202,7 @@
         </button>
     {/if}
     {#if isStarted}
-        <button class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100 mb-1" on:click|stopPropagation={stopTimer}>
+        <button class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100 mb-1" on:click|stopPropagation={() => { isManuallyStopped = true; stopTimer(); }}>
             Stop
         </button>
         <button class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100 mb-1" on:click|stopPropagation={pauseTimer}>
