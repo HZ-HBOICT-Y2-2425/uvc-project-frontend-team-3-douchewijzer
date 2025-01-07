@@ -63,7 +63,7 @@
 {:else}
     <div class="justify-center gap-y-3">  
         {#each goals.props.data as goal, index}  
-        <div class="p-4 bg-gray-100 min-h-screen flex items-center justify-center">
+        <!-- <div class="p-4 bg-gray-100 min-h-screen flex items-center justify-center"> -->
           <div class="w-full max-w-md bg-white shadow-lg rounded-lg overflow-hidden">
             <!-- Goal Header -->
             <div class="px-6 py-4 border-b">
@@ -93,7 +93,7 @@
             </div>
             </div>
           </div>
-        </div>
+        <!-- </div> -->
         {/each}
       </div>
  {/if}
