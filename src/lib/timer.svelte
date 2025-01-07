@@ -40,6 +40,20 @@
         }
     };
 
+    const updateTimerSetting = async (newTime) => {
+        try {
+            await fetch(`http://localhost:3010/users/${userID}/preferences`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ timerSetting: newTime })
+            });
+        } catch (error) {
+            console.error('Error updating timer setting:', error);
+        }
+    };
+
     onMount(() => {
         fetchTimerSetting();
     });
@@ -71,7 +85,13 @@
         timer = null;
         if (dispatchEvent) {
             showNotification = true;
-            dispatch('timerEnd');
+            dispatch('timerEnd', {
+                showerTime,
+                liters,
+                costs,
+                co2,
+                temperature
+            });
         }
         dispatch('updateTime', { time: showerTime }); // Dispatch updateTime event with showerTime
     };
@@ -136,6 +156,7 @@
         if (!timer) {
             time = Math.max(0, time + amount);
             userTime = Math.max(0, userTime + amount);
+            updateTimerSetting(userTime); // Update de nieuwe standaardtijd van de gebruiker
         }
     };
 
@@ -155,7 +176,7 @@
 <DecodeToken bind:userID bind:name />
 
 {#if showTemperatureModal}
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg text-center">
             <h2 class="text-xl font-semibold mb-4">Stel de temperatuur in</h2>
             <input type="range" min="13" max="45" bind:value={temperature} class="w-full mb-2" />
@@ -187,7 +208,6 @@
 {/if}
 
 <div class="relative bg-custom-blue p-5 rounded-2xl w-80 mx-auto text-center text-white shadow-md cursor-pointer" on:click>
-
     <button class="absolute top-2 right-2 bg-white text-blue-600 border-none px-2 py-1 text-sm rounded-md cursor-pointer shadow-sm hover:bg-blue-100" on:click|stopPropagation={toggleEditing}>
         {isEditing ? 'Opslaan' : 'Pas aan'}
     </button>
