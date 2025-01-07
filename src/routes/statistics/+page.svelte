@@ -9,16 +9,15 @@
     onMount(async () => {
       try {
         const response = await fetch(`http://localhost:3010/statistics/29/`, {
-          mode: 'cors', // Assuming your backend supports CORS
+          mode: 'cors',
         });
         if (response.ok) {
           const data = await response.json();
 
           // Sort data by statisticsID in descending order
           const sortedData = data.sort((a, b) => b.statisticsID - a.statisticsID);
-          const latestStatistics = sortedData[0];  // Use the latest statistics for "last session" values
+          const latestStatistics = sortedData[0];
 
-          // Initialize variables to calculate totals and averages
           let totalWaterUsage = 0;
           let totalTemperature = 0;
           let totalTime = 0;
@@ -33,7 +32,6 @@
           let countCO2 = 0;
           let countCost = 0;
 
-          // Iterate through all statistics entries to calculate totals and averages
           sortedData.forEach(stat => {
             if (stat.waterUsage) {
               totalWaterUsage += parseFloat(stat.waterUsage);
@@ -69,7 +67,6 @@
           const averageCO2 = countCO2 ? (totalCO2 / countCO2).toFixed(2) : '---';
           const averageCost = countCost ? (totalCost / countCost).toFixed(2) : '---';
 
-          // Now, construct rows with both latest values, averages, and totals
           rows = [
             {
               id: 1,
