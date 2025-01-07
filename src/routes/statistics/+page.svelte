@@ -69,6 +69,14 @@
           const averageCO2 = countCO2 ? (totalCO2 / countCO2).toFixed(2) : '---';
           const averageCost = countCost ? (totalCost / countCost).toFixed(2) : '---';
 
+          // total values
+          // const totalWaterUsage = totalWaterUsage.toFixed(2);
+          // const totalTime = totalTime.toFixed(2);
+          // const totalGasUsage = totalGasUsage.toFixed(2);
+          // const totalCO2 = totalCO2.toFixed(2);
+          // const totalCost = totalCost.toFixed(2);
+          
+
           rows = [
             {
               id: 1,
