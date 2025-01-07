@@ -69,6 +69,7 @@
 
 <VerifyToken />	
 
+
 <Timer on:timerEnd={handleTimerEnd} on:updateLiters={handleUpdateLiters} on:updateCosts={handleUpdateCosts} on:updateCO2={handleUpdateCO2} on:updateTemperature={handleUpdateTemperature} on:updateTime={handleUpdateTime} /> <!-- Add on:updateTime event -->
 
 <div class="flex justify-center mt-10">
