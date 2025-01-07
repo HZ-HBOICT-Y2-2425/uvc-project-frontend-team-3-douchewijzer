@@ -1,17 +1,14 @@
 <script>
-    //export let goals = []; //store goals data
-    let goals = [
-        {userID: 1, description: "douche 1 keer met de Timer", progress: 1, coinValue: 100},
-        {userID: 1, description: "douche 3 keer met de Timer", progress: 3, coinValue: 300},
-    ];
+    export let data; //store goals data
 
     // New goal form fields
   let showPopup = false;
-  let userID = 1; // You can make this dynamic if needed
+  let userID = 1;
   let description = '';
   let progress = 0;
   let coinValue = 0;
-
+  let goals = data;
+  
   // Function to add a new goal
   function addGoal() {
     if (description.trim() !== '' && progress > 0 && coinValue > 0) {
@@ -23,28 +20,29 @@
       console.log(goals);
     }
   }
-  
+
   // @ts-ignore
     function claim(index) {
          // Remove the goal at the specified index
       goals = goals.filter((_, i) => i !== index);
     };
 
+    function test() {
+      console.log(goals.props.data[0])
+    }
+
     const closePopUp = () => {
       showPopup = false;
     };
 
 </script>
-<h1>goals</h1>
-<br>
-<br>
 
-<div class="flex gap-1">
+<div class="flex gap-9 justify-center">
     <div>
         <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={() => (showPopup = true)}>Doel Maken</button>
     </div>
     <div>
-        <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={claim}>mijlpalen</button>
+        <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={test}>mijlpalen</button>
     </div>
 </div>
 
@@ -75,23 +73,42 @@
 {/if}
 
 <!--goal-->
-{#if goals.length === 0}
+{#if goals.props.data.length === 0}
     <p>Loading goals...</p>
 {:else}
-    <div>  
-        {#each goals as goal, index}  
-            <div class="bg-gray-300 border-none rounded-lg h-32 w-64 p-4">
-                <p>{goal.description}</p>
-                <div>
-                    <div class="bg-blue-300 border-none rounded-lg text-center">
-                        <p>{goal.progress}</p>
-                    </div>
-                    <p>{goal.coinValue} coins</p>
-                </div>
-                <div class="float-right bg-blue-400">
-                    <button class="bg-blue-600 text-white" on:click={() => claim(index)}>Claim</button>
-                </div>
+    <div class="justify-center gap-y-3">  
+        {#each goals.props.data as goal, index}  
+        <div class="p-4 bg-gray-100 min-h-screen flex items-center justify-center">
+          <div class="w-full max-w-md bg-white shadow-lg rounded-lg overflow-hidden">
+            <!-- Goal Header -->
+            <div class="px-6 py-4 border-b">
+              <h3 class="text-lg font-semibold text-gray-800">{goal.goalID}: {goal.goalDescription}</h3>
             </div>
+        
+            <!-- Progress Bar -->
+            <div class="px-6 py-4">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-medium text-gray-600">Progress:</span>
+                <span class="text-lg font-bold text-blue-600">{goal.goalProgress} / {goal.goalAmount}</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-4">
+                <div
+                  class="bg-blue-500 h-4 rounded-full"
+                  style="width: {goal.goalProgress / goal.goalAmount * 100}%;"
+                ></div>
+              </div>
+            </div>
+        
+            <!-- Reward Points -->
+            <div class="px-6 py-4 bg-gray-50 border-t flex items-center justify-between">
+              <div class="text-sm font-medium text-gray-600">Reward Points:</div>
+              <div class="text-lg font-bold text-blue-600">{goal.coinValue} points</div>
+              <div>
+                <button class="bg-blue-600 text-white border-none px-3 py-1 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800 float-right" on:click={() => claim(index)}>Claim</button>
+            </div>
+            </div>
+          </div>
+        </div>
         {/each}
       </div>
  {/if}

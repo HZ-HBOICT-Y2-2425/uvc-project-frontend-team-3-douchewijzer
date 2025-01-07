@@ -10,23 +10,18 @@ export async function load( { fetch} ) {
         }
         const text = await res.text(); if (!text) { throw new Error('Empty response body'); }
 
-        // const goals = await res.json();
-        // if (goals) {
-        //     console.log('Data received:', goals);
-        //   } else {
-        //     console.log('No data found.');
-        //   }
-        const goals = JSON.parse(text);
+        const data = JSON.parse(text);
+
+        console.log("data");
 
         //send fetched data to +page.svelte
-
         return {
-            props: { goals, } };
+            props: { data, } };
 
     } catch (error) {
         console.error(error);
         return {
-            goals: [],
+            data: [],
         };
     }
 };
