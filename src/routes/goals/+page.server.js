@@ -31,10 +31,11 @@ export const actions = {
         const goalDescription = formData.get('goalDescription');
         const goalAmount = parseInt(formData.get('goalAmount'));
         const coinValue = parseInt(formData.get('coinValue'));
+        const id = parseInt(formData.get('userID'));
         console.log(goalDescription)
     
         try {
-          const res = await fetch(`http://localhost:3010/goalsMilestones/goals?userID=30&goalDescription=${goalDescription}&goalAmount=${goalAmount}&coinValue=${coinValue}`, {
+          const res = await fetch(`http://localhost:3010/goalsMilestones/goals?userID=${id}&goalDescription=${goalDescription}&goalAmount=${goalAmount}&coinValue=${coinValue}`, {
             method: 'POST',
           });
     
@@ -48,4 +49,29 @@ export const actions = {
           return { success: false, error: error.message };
         }
       },
+    
+      claimGoal: async ({request}) => {
+
+        try {
+            const formData = await request.formData();
+            const method = formData.get('_method');
+            const goalID = formData.get('goalID');
+        
+            if (method !== 'DELETE') {
+            return { success: false, error: 'Invalid request method' };
+
+            }
+            const res = await fetch(`http://localhost:3010/goalsMilestones/goals/${goalID}`, {
+                method: 'DELETE',
+            });
+
+            if (!res.ok) {
+                throw new Error(`Failed to add goal: ${res.statusText}`);
+              }
+            return { succes: true }  
+        } catch (error) {
+            console.error(error);
+            return {succes: false, error: error.message};
+        }
+      }
 }
