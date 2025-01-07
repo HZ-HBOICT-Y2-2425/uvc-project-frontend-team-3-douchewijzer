@@ -1,56 +1,70 @@
 <script lang="ts">
-  import TopUser from '../../lib/TopUser.svelte';
   import { onMount } from 'svelte';
   import VerifyToken from '$lib/VerifyToken.svelte';
+  import DecodeToken from '$lib/DecodeToken.svelte';
 
-  let leaderboardData = [
-    { name: "Eiden", liters: 210, temperature: 22, time: 180 },
-    { name: "Jackson", liters: 160, temperature: 24, time: 140 },
-    { name: "Emma Aria", liters: 130, temperature: 23, time: 150 },
-    { name: "Sebastian", liters: 115, temperature: 21, time: 170 },
-    { name: "Jason", liters: 80, temperature: 25, time: 160 },
-    { name: "Natalie", liters: 74, temperature: 20, time: 190 },
-    { name: "Serenity", liters: 60, temperature: 19, time: 200 },
-    { name: "Hannah", liters: 40, temperature: 18, time: 210 },
-    { name: "Aria", liters: 30, temperature: 17, time: 220 },
-    { name: "Mr. Beast", liters: 20, temperature: 16, time: 230 },
-    { name: "Liam", liters: 10, temperature: 15, time: 240 },
-    { name: "Mila", liters: 5, temperature: 14, time: 250 },
-    { name: "Tyler", liters: 2, temperature: 13, time: 260 },
-  ];
+  let leaderboardData = []; // Holds the leaderboard data
+  let selectedSort: "liters" | "temperature" | "time" = "liters"; // Sorting state
+  let errorMessage = ''; // For handling errors
+  let loading = true; // For loading state
 
-  let selectedSort: "liters" | "temperature" | "time" = "liters";
+  // Function to fetch the leaderboard data
+  const fetchLeaderboardData = async () => {
+    loading = true; // Start loading
+    try {
+      const response = await fetch('http://localhost:3010/statistics');
+      if (!response.ok) {
+        throw new Error(`Failed to fetch leaderboard data: ${response.statusText}`);
+      }
+      const data = await response.json();
 
-  $: sortedData = leaderboardData.slice().sort((a, b) => {
-    if (selectedSort === "temperature" || selectedSort === "time") {
-      return a[selectedSort] - b[selectedSort];
+      // Process the data to keep the latest entry for each user
+      const latestEntries = {};
+      data.forEach(entry => {
+        if (!latestEntries[entry.userID] || entry.statisticsID > latestEntries[entry.userID].statisticsID) {
+          latestEntries[entry.userID] = entry;
+        }
+      });
+
+      leaderboardData = Object.values(latestEntries); // Update leaderboard data with latest entries
+      console.log('Leaderboard Data:', leaderboardData); // Log to confirm the data
+
+    } catch (error) {
+      console.error('Error fetching leaderboard data:', error);
+      errorMessage = 'Failed to load leaderboard data.';
+    } finally {
+      loading = false; // End loading
     }
-    return b[selectedSort] - a[selectedSort];
+  };
+
+  // Sort the data based on the selected sorting parameter
+  $: sortedData = leaderboardData.slice().sort((a, b) => {
+    return a[selectedSort] - b[selectedSort];
   });
 
+  // Sorting labels and descriptions
   $: headerDescription = {
-    liters: "Liters water bespaard",
-    temperature: "Laagste temperatuur douchen",
-    time: "Tijd gedoucht",
+    liters: "Liters of water used",
+    temperature: "Lowest temperature during shower",
+    time: "Shower duration",
   }[selectedSort];
+
+  // Fetch data when the component is mounted
+  onMount(() => {
+    fetchLeaderboardData();
+  });
 </script>
 
-<VerifyToken />
-<style>
-  :global(body) {
-    overflow: hidden; 
-  }
-</style>
+<VerifyToken /> <!-- Add any required token verification here -->
 
 <main class="min-h-screen flex flex-col">
-
-  <!-- Filter status -->
+  <!-- Header with sorting description -->
   <header class="bg-[#00A9FF] py-4 px-6 text-white text-center sticky">
     <p class="text-sm" style="margin-top: -20px;">{headerDescription}</p>
   </header>
 
-  <!-- Filter buttons -->
-  <nav class=" text-black py-2 flex justify-around rounded space-x-2 px-4">
+  <!-- Filter buttons to change sorting -->
+  <nav class="text-black py-2 flex justify-around rounded space-x-2 px-4">
     <button
       class="font-medium py-2 px-4 rounded border border-[#89CFF3] {selectedSort === 'liters' ? 'bg-[#007BFF] text-white' : 'bg-[#89CFF3]'}"
       on:click={() => (selectedSort = "liters")}
@@ -61,21 +75,33 @@
       class="font-medium py-2 px-4 rounded border border-[#89CFF3] {selectedSort === 'temperature' ? 'bg-[#007BFF] text-white' : 'bg-[#89CFF3]'}"
       on:click={() => (selectedSort = "temperature")}
     >
-      Temperatuur
+      Temperature
     </button>
     <button
       class="font-medium py-2 px-4 rounded border border-[#89CFF3] {selectedSort === 'time' ? 'bg-[#007BFF] text-white' : 'bg-[#89CFF3]'}"
       on:click={() => (selectedSort = "time")}
     >
-      Tijd
+      Time
     </button>
   </nav>
 
+  <!-- Loading State -->
+  {#if loading}
+    <div class="text-center py-4">Loading leaderboard...</div>
+  {/if}
+
+  <!-- Error State -->
+  {#if errorMessage}
+    <div class="text-center py-4 text-red-500">{errorMessage}</div>
+  {/if}
+
   <!-- Top 3 podium -->
   <section class="flex justify-center items-end py-6 space-x-0 rounded-t-lg">
-    <TopUser user={sortedData[1]} position={2} selectedSort={selectedSort} boxColor="#A0E9FF" />
-    <TopUser user={sortedData[0]} position={1} selectedSort={selectedSort} boxColor="#89CFF3" />
-    <TopUser user={sortedData[2]} position={3} selectedSort={selectedSort} boxColor="#A0E9FF" />
+    {#if leaderboardData.length > 0}
+      <TopUser user={sortedData[1]} position={2} selectedSort={selectedSort} boxColor="#A0E9FF" />
+      <TopUser user={sortedData[0]} position={1} selectedSort={selectedSort} boxColor="#89CFF3" />
+      <TopUser user={sortedData[2]} position={3} selectedSort={selectedSort} boxColor="#A0E9FF" />
+    {/if}
   </section>
 
   <!-- Other users list -->
@@ -87,8 +113,7 @@
         <div class="flex items-center">
           <img src="https://via.placeholder.com/40" alt="Avatar" class="w-10 h-10 rounded-full mr-3" />
           <div>
-            <p class="text-sm font-medium">{user.name}</p>
-            <p class="text-xs text-gray-500"></p>
+            <p class="text-sm font-medium">{user.userID}</p>
           </div>
         </div>
         <div class="text-sm font-semibold text-blue-700">
