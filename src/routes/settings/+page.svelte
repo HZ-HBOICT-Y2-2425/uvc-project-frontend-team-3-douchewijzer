@@ -1,8 +1,3 @@
-
-
-
-
-
 <script>
     import { onMount } from 'svelte';
     import VerifyToken from '$lib/VerifyToken.svelte';
@@ -128,5 +123,5 @@
     <div class="my-4 p-6 border rounded-lg shadow-md bg-white">
         <LatestBadges {badges} />
     </div>
-    <button on:click={logout} class="bg-red-600 text-white px-4 py-2 rounded-md mt-6">Logout</button>
+    <button on:click={logout} class="bg-red-600 text-white px-4 py-2 rounded-md mt-4 mb-16">Logout</button>
 </div>
