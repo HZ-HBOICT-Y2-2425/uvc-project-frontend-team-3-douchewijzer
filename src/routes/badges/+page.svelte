@@ -20,22 +20,21 @@
     }
   };
 
-  // Fetch badges on component mount
+
   onMount(() => {
     fetchBadges();
   });
 </script>
 
-<!-- Header -->
+
 <VerifyToken />
 
 
-<!-- Badges Grid -->
 <section class="p-4 bg-blue-100 grid grid-cols-2 pb-16 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
   {#if badges.length > 0}
     {#each badges as badge}
       <div class="bg-white rounded-lg shadow-md overflow-hidden p-2 flex flex-col items-center aspect-w-1 aspect-h-1">
-        <img src={badge.badgeImage || 'placeholder.png'} alt="Badge" class="w-full h-full object-cover mb-2" />
+        <img src="/Douche_Wijzer_Logo.png" alt="Badge" class="w-full h-full object-cover mb-2" />
         <p class="text-sm font-semibold text-center">Badge ID: {badge.badgeID}</p>
         <p class="text-sm font-semibold text-center">Badge Name: {badge.badgeName}</p>
         <p class="text-xs text-gray-500">{badge.badgeDescription}</p>

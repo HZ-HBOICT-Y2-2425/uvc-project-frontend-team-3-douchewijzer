@@ -12,13 +12,7 @@
 
     let userID = '';
     let name = '';
-    let badges = [
-    {
-      itemID: 1,
-      itemValue: "4.00",
-      itemImage: "https://via.placeholder.com/10",
-    }
-  ];
+    let badges = [];
     let leaderboardNotification = false;
     let uploadPreference = false;
     let timerSetting = 300;
@@ -130,5 +124,9 @@
         </div>
     </div>
 
+    <h2 class="text-2xl font-bold mt-6 mb-4">Latest Badges</h2>
+    <div class="my-4 p-6 border rounded-lg shadow-md bg-white">
+        <LatestBadges {badges} />
+    </div>
     <button on:click={logout} class="bg-red-600 text-white px-4 py-2 rounded-md mt-6">Logout</button>
 </div>
