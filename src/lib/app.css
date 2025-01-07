@@ -7,4 +7,24 @@
   .bg-custom-blue {
     background-color: #3ABEF9 !important;
   }
+
+  /* Leaderboard CSS */
+.min-h-screen {
+  min-height: 100vh;
 }
+.gap-4 {
+  gap: 1rem;
+}
+.rounded {
+  border-radius: 0.5rem;
+}
+.overflow-y-auto {
+  overflow-y: auto;
+}
+.p-4 {
+  padding: 1rem;
+}
+
+}
+
+
