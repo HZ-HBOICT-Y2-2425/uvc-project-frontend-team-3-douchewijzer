@@ -2,13 +2,15 @@
     import { onMount } from 'svelte';
     import VerifyToken from '$lib/VerifyToken.svelte';
     import SvelteTable from "svelte-table";
+    import DecodeToken from '$lib/DecodeToken.svelte';
 
     let rows = []; // Initialize empty rows
+    let userID = '';
 
     // Fetch the data from the backend when the component is mounted
     onMount(async () => {
       try {
-        const response = await fetch(`http://localhost:3010/statistics/29/`, {
+        const response = await fetch(`http://localhost:3010/statistics/ ${userID} /`, {
           mode: 'cors',
         });
         if (response.ok) {
@@ -173,6 +175,7 @@
 </script>
 
 <VerifyToken />
+<DecodeToken bind:userID />
 
 <!-- <div class="table" style="margin-left:35%">
   <SvelteTable {columns} {rows}></SvelteTable>
