@@ -40,20 +40,6 @@
         }
     };
 
-    const updateTimerSetting = async (newTime) => {
-        try {
-            await fetch(`http://localhost:3010/users/${userID}/preferences`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ timerSetting: newTime })
-            });
-        } catch (error) {
-            console.error('Error updating timer setting:', error);
-        }
-    };
-
     onMount(() => {
         fetchTimerSetting();
     });
@@ -156,7 +142,6 @@
         if (!timer) {
             time = Math.max(0, time + amount);
             userTime = Math.max(0, userTime + amount);
-            updateTimerSetting(userTime); // Update de nieuwe standaardtijd van de gebruiker
         }
     };
 
