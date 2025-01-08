@@ -131,7 +131,7 @@
         <div class="my-2 text-lg">Coins: {coins}</div>
         <button on:click={() => showEmojiPicker = !showEmojiPicker} class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 mb-4">Select Emoji</button>
         {#if showEmojiPicker}
-            <emoji-picker on:emoji-click={handleEmojiSelect} style="--emoji-font-family: 'Apple Color Emoji', sans-serif;"></emoji-picker>
+            <emoji-picker on:emoji-click={handleEmojiSelect} class="light emojiPicker" style="--emoji-font-family: 'Apple Color Emoji', sans-serif, --background: fff;"></emoji-picker>
         {/if}    
     </div>
 
@@ -174,8 +174,11 @@
 
 <style>
     .emoji {
-        width: 32px; /* Set your desired size */
+        width: 32px;
         height: 32px;
-        vertical-align: middle; /* Optional: Align emoji with surrounding text */
+        vertical-align: middle; 
     }
+    emoji-picker {
+        --emoji-font-family: "Apple Color Emoji";
+}
 </style>
