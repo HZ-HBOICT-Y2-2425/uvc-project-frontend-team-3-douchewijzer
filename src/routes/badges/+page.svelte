@@ -2,6 +2,8 @@
   import { onMount } from 'svelte';
   import VerifyToken from '$lib/VerifyToken.svelte';
 
+  let userID = '';
+  let name = '';
   let badges = []; 
   let errorMessage = ''; 
 
