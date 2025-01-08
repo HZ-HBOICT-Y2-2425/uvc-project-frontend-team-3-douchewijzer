@@ -4,6 +4,7 @@
   import DecodeToken from '$lib/DecodeToken.svelte';
 
   let leaderboardData = []; // Holds the leaderboard data
+  let userData = {}; // Holds user data fetched from /users endpoint
   let selectedSort: "liters" | "temperature" | "time" = "liters"; // Sorting state
   let errorMessage = ''; // For handling errors
   let loading = true; // For loading state
@@ -37,6 +38,26 @@
     }
   };
 
+  // Function to fetch the user data
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch('http://localhost:3010/users/');
+      if (!response.ok) {
+        throw new Error(`Failed to fetch user data: ${response.statusText}`);
+      }
+      const data = await response.json();
+
+      // Store user data by userID for easy access
+      data.forEach(user => {
+        userData[user.userID] = user;
+      });
+      console.log('User Data:', userData); // Log to confirm the data
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      errorMessage = 'Failed to load user data.';
+    }
+  };
+
   // Sort the data based on the selected sorting parameter
   $: sortedData = leaderboardData.slice().sort((a, b) => {
     return a[selectedSort] - b[selectedSort];
@@ -52,6 +73,7 @@
   // Fetch data when the component is mounted
   onMount(() => {
     fetchLeaderboardData();
+    fetchUserData();
   });
 </script>
 
@@ -111,9 +133,15 @@
         class="flex justify-between items-center mb-0 p-3 rounded {idx % 2 === 0 ? 'bg-[#A0E9FF]' : 'bg-[#CDF5FD]'}"
       >
         <div class="flex items-center">
-          <img src="https://via.placeholder.com/40" alt="Avatar" class="w-10 h-10 rounded-full mr-3" />
+          <!-- Show user image or placeholder -->
+          <img 
+            src={userData[user.userID]?.userImage || 'https://via.placeholder.com/40'} 
+            alt="Avatar" 
+            class="w-10 h-10 rounded-full mr-3" 
+          />
           <div>
-            <p class="text-sm font-medium">{user.userID}</p>
+            <!-- Show user's name -->
+            <p class="text-sm font-medium">{userData[user.userID]?.name || 'Unknown User'}</p>
           </div>
         </div>
         <div class="text-sm font-semibold text-blue-700">
