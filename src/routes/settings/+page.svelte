@@ -4,6 +4,7 @@
     import DecodeToken from '$lib/DecodeToken.svelte';
     import { goto } from '$app/navigation';
     import LatestBadges from '$lib/LatestBadges.svelte';
+    import EmojiConvertor from 'emoji-js';
 
     let userID = '';
     let name = '';
@@ -13,9 +14,17 @@
     let timerSetting = 300;
     let email = '';
     let coins = 0;
+    let userImage = ''; // Add userImage variable
+    let selectedEmoji = ''; // Add selectedEmoji variable
+    let showEmojiPicker = false; // Add showEmojiPicker variable
 
     let minutes = Math.floor(timerSetting / 60);
     let seconds = timerSetting % 60;
+
+    const emoji = new EmojiConvertor();
+    emoji.img_set = 'apple';
+    emoji.img_sets.apple.path = 'https://cdnjs.cloudflare.com/ajax/libs/emoji-datasource-apple/6.0.1/img/apple/64/';
+    emoji.replace_mode = 'img'; // Ensures the output is <img>
 
     const fetchPreferences = async () => {
         try {
@@ -37,6 +46,8 @@
             const data = await response.json();
             email = data.email;
             coins = data.coins ?? 0;
+            const emojiChar = String.fromCodePoint(parseInt(data.userImage, 16)); // Convert Unicode code point to emoji character
+            userImage = emoji.replace_unified(emojiChar); // Convert emoji to HTML <img> tag
         } catch (error) {
             console.error('Error fetching account:', error);
         }
@@ -57,16 +68,48 @@
         updatePreference('timerSetting', timerSetting);
     };
 
+    const emojiToUnicode = (emoji) => {
+        return emoji.codePointAt(0).toString(16);
+    };
+
+    const updateUserImage = async (emoji) => {
+        const emojiUnicode = emojiToUnicode(emoji);
+        try {
+            await fetch(`http://localhost:3010/users/${userID}?userImage=${emojiUnicode}`, {
+                method: 'PUT'
+            });
+            fetchAccount(); // Refresh account data
+        } catch (error) {
+            console.error('Error updating user image:', error);
+        }
+    };
+
+    const handleEmojiSelect = (event) => {
+        const emoji = event.detail.unicode;
+        selectedEmoji = emoji;
+        updateUserImage(emoji);
+        showEmojiPicker = false; // Hide emoji picker after selection
+    };
+
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
         return `${minutes}m ${remainingSeconds}s`;
     };
 
-    onMount(() => {
+    onMount(async () => {
         fetchPreferences();
         fetchAccount();
+        const { default: EmojiPickerElement } = await import('emoji-picker-element');
+        customElements.define('emoji-picker', EmojiPickerElement);
     });
+
+    $: if (showEmojiPicker) {
+        const emojiPicker = document.querySelector('emoji-picker');
+        if (emojiPicker) {
+            emojiPicker.addEventListener('emoji-click', handleEmojiSelect);
+        }
+    }
 
     const logout = () => {
         document.cookie = 'jwt=; Max-Age=0; path=/;';
@@ -83,10 +126,13 @@
 
     <h2 class="text-2xl font-bold mt-6 mb-4">Account</h2>
     <div class="my-4 p-6 border rounded-lg shadow-md bg-white">
-        <div class="my-2">(insert image here)</div>
-        <img src="" alt="it ain't here boss" class="my-2">
+        {@html userImage}
         <div class="my-2 text-lg">Email: {email}</div>
         <div class="my-2 text-lg">Coins: {coins}</div>
+        <button on:click={() => showEmojiPicker = !showEmojiPicker} class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 mb-4">Select Emoji</button>
+        {#if showEmojiPicker}
+            <emoji-picker on:emoji-click={handleEmojiSelect} class="light emojiPicker" style="--emoji-font-family: 'Apple Color Emoji', sans-serif, --background: fff;"></emoji-picker>
+        {/if}    
     </div>
 
     <h2 class="text-2xl font-bold mt-6 mb-4">Toestemming</h2>
@@ -125,3 +171,14 @@
     </div>
     <button on:click={logout} class="bg-red-600 text-white px-4 py-2 rounded-md mt-4 mb-16">Logout</button>
 </div>
+
+<style>
+    .emoji {
+        width: 32px;
+        height: 32px;
+        vertical-align: middle; 
+    }
+    emoji-picker {
+        --emoji-font-family: "Apple Color Emoji";
+}
+</style>
