@@ -170,7 +170,7 @@
         <div class="flex items-center">
           {@html user.userImage}
           <div>
-            <p class="text-sm font-medium">{user.name || `User ${user.userID}`}</p>
+            <p class="text-lg font-medium ml-4">{user.name || `User ${user.userID}`}</p>
           </div>
         </div>
         <div class="text-sm font-semibold text-blue-700">
