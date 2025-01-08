@@ -3,11 +3,17 @@
   import VerifyToken from '$lib/VerifyToken.svelte';
   import DecodeToken from '$lib/DecodeToken.svelte';
   import TopUser from '$lib/TopUser.svelte';
+  import EmojiConvertor from 'emoji-js';
 
   let leaderboardData = []; // Holds the leaderboard data
   let selectedSort: "liters" | "temperature" | "time" = "liters"; // Sorting state
   let errorMessage = ''; // For handling errors
   let loading = true; // For loading state
+
+  const emoji = new EmojiConvertor();
+  emoji.img_set = 'apple';
+  emoji.img_sets.apple.path = 'https://cdnjs.cloudflare.com/ajax/libs/emoji-datasource-apple/6.0.1/img/apple/64/';
+  emoji.replace_mode = 'img'; // Ensures the output is <img>
 
   // Function to fetch the leaderboard data
   const fetchLeaderboardData = async () => {
@@ -50,9 +56,11 @@
       // Create a map of userID to user details for quick lookup
       const userMap = {};
       users.forEach((user) => {
+        const emojiChar = String.fromCodePoint(parseInt(user.userImage, 16)); // Convert Unicode code point to emoji character
+        const userImage = emoji.replace_unified(emojiChar); // Convert emoji to HTML <img> tag
         userMap[user.userID] = {
           name: user.name,
-          userImage: user.userImage || "https://via.placeholder.com/40", // Default to placeholder if no image
+          userImage: userImage || "https://via.placeholder.com/40", // Default to placeholder if no image
         };
       });
 
@@ -160,7 +168,7 @@
     {#each sortedData.slice(3) as user, idx}
       <article class="flex justify-between items-center mb-0 p-3 rounded {idx % 2 === 0 ? 'bg-[#A0E9FF]' : 'bg-[#CDF5FD]'}">
         <div class="flex items-center">
-          <img src={user.userImage} alt="Avatar" class="w-10 h-10 rounded-full mr-3" />
+          {@html user.userImage}
           <div>
             <p class="text-sm font-medium">{user.name || `User ${user.userID}`}</p>
           </div>

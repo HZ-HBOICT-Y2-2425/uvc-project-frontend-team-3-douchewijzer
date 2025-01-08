@@ -21,12 +21,7 @@
     class="flex justify-center items-center mx-auto mb-2 relative"
     style="width: {position === 1 ? '100px' : position === 2 ? '75px' : '55px'}; height: {position === 1 ? '100px' : position === 2 ? '75px' : '55px'}; border-radius: 50%;"
   >
-    <img
-      src={user?.userImage || 'https://via.placeholder.com/100'}
-      alt="Avatar"
-      class="rounded-full"
-      style="width: 100%; height: 100%; object-fit: cover;"
-    />
+    {@html user?.userImage || '<img src="https://via.placeholder.com/100" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;" />'}
     <span
       class="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs font-bold rounded-full flex items-center justify-center"
       style="width: {position === 1 ? '30px' : position === 2 ? '25px' : '20px'}; height: {position === 1 ? '30px' : position === 2 ? '25px' : '20px'};"
