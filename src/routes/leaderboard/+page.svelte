@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import VerifyToken from '$lib/VerifyToken.svelte';
   import DecodeToken from '$lib/DecodeToken.svelte';
+  import TopUser from '$lib/TopUser.svelte';
 
   let leaderboardData = []; // Holds the leaderboard data
   let selectedSort: "liters" | "temperature" | "time" = "liters"; // Sorting state
