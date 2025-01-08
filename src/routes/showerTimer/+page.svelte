@@ -1,5 +1,5 @@
 <script>
-    import Timer from '$lib/Timer.svelte';
+    import Timer from '$lib/timer.svelte';
     import VerifyToken from '$lib/VerifyToken.svelte';
     import { onMount } from 'svelte';
     import DecodeToken from '$lib/DecodeToken.svelte';
