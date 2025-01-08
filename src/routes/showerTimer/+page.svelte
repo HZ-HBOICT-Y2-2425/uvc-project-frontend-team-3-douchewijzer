@@ -39,8 +39,29 @@
         lastTime = event.detail.time.toFixed(1); // Update lastTime
     };
 
-    let userID = '';
-    let name = '';
+    const saveShowerResult = async () => {
+        console.log(`Last time: ${lastTime} seconds`); // Log lastTime in seconds
+        try {
+            const response = await fetch(`http://localhost:3010/statistics/${userID}?temperature=${temperature}&currentCosts=${costs}&waterUsage=${liters}&lastTime=${lastTime}`, { // Add lastTime to URL
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save shower result');
+            }
+
+            const data = await response.json();
+            console.log('Shower result saved:', data);
+        } catch (error) {
+            console.error('Error saving shower result:', error);
+        }
+    };
+
+        let userID = '';
+        let name = '';
 </script>
 
 <DecodeToken bind:userID bind:name />

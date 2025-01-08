@@ -25,6 +25,7 @@
 		"vite": "^5.0.3"
 	},
 	"dependencies": {
+		"chart.js": "^4.4.7",
 		"emoji-js": "^3.8.1",
 		"emoji-picker-element": "^1.26.0",
 		"jwt-decode": "^4.0.0",
