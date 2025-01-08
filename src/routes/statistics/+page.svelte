@@ -1,39 +1,41 @@
-   <script>
+<script>
     import { onMount } from 'svelte';
     import VerifyToken from '$lib/VerifyToken.svelte';
-    import SvelteTable from "svelte-table";
     import DecodeToken from '$lib/DecodeToken.svelte';
-
-    let rows = []; // Initialize empty rows
+    import Chart from 'chart.js/auto';
+  
+    let rows = [];
     let userID = '';
-
+    let chart;
+    let waterChartData = [];
+    let waterChartLabels = [];
+  
     // Fetch the data from the backend when the component is mounted
     onMount(async () => {
       try {
-        const response = await fetch(`http://localhost:3010/statistics/ ${userID} /`, {
+        const response = await fetch(`http://localhost:3010/statistics/${userID}/`, {
           mode: 'cors',
         });
         if (response.ok) {
           const data = await response.json();
-
-          // Sort data by statisticsID in descending order
+  
           const sortedData = data.sort((a, b) => b.statisticsID - a.statisticsID);
           const latestStatistics = sortedData[0];
-
+  
           let totalWaterUsage = 0;
           let totalTemperature = 0;
           let totalTime = 0;
           let totalGasUsage = 0;
           let totalCO2 = 0;
           let totalCost = 0;
-
+  
           let countWater = 0;
           let countTemperature = 0;
           let countTime = 0;
           let countGas = 0;
           let countCO2 = 0;
           let countCost = 0;
-
+  
           sortedData.forEach(stat => {
             if (stat.waterUsage) {
               totalWaterUsage += parseFloat(stat.waterUsage);
@@ -60,23 +62,14 @@
               countCost++;
             }
           });
-
-          // Calculate averages by dividing totals by count
+  
           const averageWater = countWater ? (totalWaterUsage / countWater).toFixed(2) : '---';
           const averageTemperature = countTemperature ? (totalTemperature / countTemperature).toFixed(2) : '---';
           const averageTime = countTime ? (totalTime / countTime).toFixed(2) : '---';
           const averageGas = countGas ? (totalGasUsage / countGas).toFixed(2) : '---';
           const averageCO2 = countCO2 ? (totalCO2 / countCO2).toFixed(2) : '---';
           const averageCost = countCost ? (totalCost / countCost).toFixed(2) : '---';
-
-          // total values
-          // const totalWaterUsage = totalWaterUsage.toFixed(2);
-          // const totalTime = totalTime.toFixed(2);
-          // const totalGasUsage = totalGasUsage.toFixed(2);
-          // const totalCO2 = totalCO2.toFixed(2);
-          // const totalCost = totalCost.toFixed(2);
-          
-
+  
           rows = [
             {
               id: 1,
@@ -97,7 +90,7 @@
               unit: "Tijd",
               last_session: `${latestStatistics.lastTime || '---'} seconden`,
               average: `${averageTime} seconden`,
-              total: "---"
+              total: `${totalTime.toFixed(2)} seconden`
             },
             {
               id: 4,
@@ -121,6 +114,12 @@
               total: `€${totalCost.toFixed(2)}`
             }
           ];
+  
+          const lastSevenEntries = sortedData.slice(0, 7).reverse();
+          waterChartData = lastSevenEntries.map(stat => parseFloat(stat.waterUsage) || 0);
+          waterChartLabels = lastSevenEntries.map(stat => `Beurt: ${stat.statisticsID}`);
+  
+          createWaterUsageChart();
         } else {
           console.error('Failed to fetch data');
         }
@@ -128,89 +127,78 @@
         console.error('Error:', error);
       }
     });
-
-    // Columns for the SvelteTable
-    const columns = [
-      {
-        key: "unit",
-        title: "Eenheden",
-        value: (v) => v.unit,
-        sortable: true,
-        sortFunction: (a, b) => {
-          const sortOrder = [
-            "Water",
-            "Temperatuur",
-            "Tijd",
-            "Gas",
-            "CO2",
-            "Kosten",
-          ];
-          return sortOrder.indexOf(a.unit) - sortOrder.indexOf(b.unit);
+  
+    function createWaterUsageChart() {
+      const ctx = document.getElementById('waterUsageChart').getContext('2d');
+  
+      if (chart) {
+        chart.destroy();
+      }
+  
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: waterChartLabels,
+          datasets: [
+            {
+              label: 'Watergebruik (L)',
+              data: waterChartData,
+              borderColor: 'rgba(75, 192, 192, 1)',
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.1
+            }
+          ]
         },
-        filterOptions: (rows) => {
-          let units = {};
-          rows.forEach((row) => {
-            let unit = row.unit;
-            if (units[unit] === undefined)
-              units[unit] = {
-                name: `${unit}`,
-                value: unit,
-              };
-          });
-          units = Object.entries(units)
-            .sort()
-            .reduce((o, [k, v]) => ((o[k] = v), o), {});
-          return Object.values(units);
-        },
-        filterValue: (v) => v.unit,
-      },
-      {
-        key: "last_session",
-        title: "Laatste sessie",
-        value: (v) => v.last_session,
-      },
-      {
-        key: "average",
-        title: "Gemiddeld",
-        value: (v) => v.average,
-      },
-      {
-        key: "total",
-        title: "Totaal",
-        value: (v) => v.total,
-      },
-    ];
-</script>
-
-<VerifyToken />
-<DecodeToken bind:userID />
-
-<!-- <div class="table" style="margin-left:35%">
-  <SvelteTable {columns} {rows}></SvelteTable>
-</div> -->
-
-<table class="htmlTable2 w-11/12 border-collapse bg-blue-200 rounded-3xl p-8 m-8 border border-black mb-72" style="margin-left: 20%; width: 60%; height: 40%;">
-    <thead class="columnNames2">
-        <tr>
-            <th class="border border-gray-300 p-2 bg-blue-900 text-white">Eenheden</th>
-            <th class="border border-gray-300 p-2 bg-blue-900 text-white">Laatste sessie</th>
-            <th class="border border-gray-300 p-2 bg-blue-900 text-white">Gemiddeld</th>
-            <th class="border border-gray-300 p-2 bg-blue-900 text-white">Totaal</th>
-        </tr>
-    </thead>
-    <tbody class="tableRow">
-        {#each rows as row (row.id)}
-        <tr>
-            <td class="border border-gray-300 p-2 bg-white">{row.unit}</td>
-            <td class="border border-gray-300 p-2 bg-white">{row.last_session}</td>
-            <td class="border border-gray-300 p-2 bg-white">{row.average}</td>
-            <td class="border border-gray-300 p-2 bg-white">{row.total}</td>
-        </tr>
-        {/each}
-    </tbody>
-</table>
-
-<div>
-    <img src="src\routes\statistics\a mock graph.png" alt="A mock graph" class="w-11/12 m-8" style="width: 60%; height: 40%; margin-top: -280px; margin-left: 20%;">
-    <img src="src\routes\statistics\a mock graph 2.png" alt="A mock graph" class="w-11/12 m-8" style="width: 60%; height: 40%; margin-bottom: 30%; margin-left: 20%;">
-</div>
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Liters'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Afgelopen douchebeurten'
+              }
+            }
+          }
+        }
+      });
+    }
+  </script>
+  
+  <VerifyToken />
+  <DecodeToken bind:userID />
+  
+  <table class="htmlTable2 w-11/12 border-collapse bg-blue-200 rounded-3xl p-8 m-8 border border-black mb-72" style="margin-left: 20%; width: 60%; height: 40%;">
+      <thead class="columnNames2">
+          <tr>
+              <th class="border border-gray-300 p-2 bg-blue-900 text-white">Eenheden</th>
+              <th class="border border-gray-300 p-2 bg-blue-900 text-white">Laatste sessie</th>
+              <th class="border border-gray-300 p-2 bg-blue-900 text-white">Gemiddeld</th>
+              <th class="border border-gray-300 p-2 bg-blue-900 text-white">Totaal</th>
+          </tr>
+      </thead>
+      <tbody class="tableRow">
+          {#each rows as row (row.id)}
+          <tr>
+              <td class="border border-gray-300 p-2 bg-white">{row.unit}</td>
+              <td class="border border-gray-300 p-2 bg-white">{row.last_session}</td>
+              <td class="border border-gray-300 p-2 bg-white">{row.average}</td>
+              <td class="border border-gray-300 p-2 bg-white">{row.total}</td>
+          </tr>
+          {/each}
+      </tbody>
+  </table>
+  
+  <div style="margin-left: 17.5%; width: 65%; height: 100%; margin-top: -12%; margin-bottom: 10%;">
+      <canvas id="waterUsageChart"></canvas>
+  </div>
+  
