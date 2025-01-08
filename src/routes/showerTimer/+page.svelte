@@ -8,11 +8,10 @@
     let costs = 0;
     let co2 = 0;
     let temperature = 0;    
-    let lastTime = 0; // Add lastTime variable
+    let lastTime = 0; // lastTime variable
 
-    const handleTimerEnd = async () => {
+    const handleTimerEnd = () => {
         console.log('Timer is afgelopen!');
-        await saveShowerResult();
         liters = 0;
         costs = 0;
         co2 = 0;
@@ -68,6 +67,7 @@
 <DecodeToken bind:userID bind:name />
 
 <VerifyToken />	
+
 
 <Timer on:timerEnd={handleTimerEnd} on:updateLiters={handleUpdateLiters} on:updateCosts={handleUpdateCosts} on:updateCO2={handleUpdateCO2} on:updateTemperature={handleUpdateTemperature} on:updateTime={handleUpdateTime} /> <!-- Add on:updateTime event -->
 
