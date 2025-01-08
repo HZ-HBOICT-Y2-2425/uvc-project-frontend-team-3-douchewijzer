@@ -4,7 +4,6 @@
   import DecodeToken from '$lib/DecodeToken.svelte';
 
   let leaderboardData = []; // Holds the leaderboard data
-  let userData = {}; // Holds user data fetched from /users endpoint
   let selectedSort: "liters" | "temperature" | "time" = "liters"; // Sorting state
   let errorMessage = ''; // For handling errors
   let loading = true; // For loading state
@@ -38,30 +37,65 @@
     }
   };
 
-  // Function to fetch the user data
+  // Function to fetch user data and enrich leaderboardData
   const fetchUserData = async () => {
     try {
-      const response = await fetch('http://localhost:3010/users/');
+      const response = await fetch('http://localhost:3010/users');
       if (!response.ok) {
         throw new Error(`Failed to fetch user data: ${response.statusText}`);
       }
-      const data = await response.json();
+      const users = await response.json();
 
-      // Store user data by userID for easy access
-      data.forEach(user => {
-        userData[user.userID] = user;
+      // Create a map of userID to user details for quick lookup
+      const userMap = {};
+      users.forEach((user) => {
+        userMap[user.userID] = {
+          name: user.name,
+          userImage: user.userImage || "https://via.placeholder.com/40", // Default to placeholder if no image
+        };
       });
-      console.log('User Data:', userData); // Log to confirm the data
+
+      // Update leaderboardData with user details
+      leaderboardData = leaderboardData.map((entry) => ({
+        ...entry,
+        name: userMap[entry.userID]?.name || `User ${entry.userID}`, // Default to "User {userID}" if no name
+        userImage: userMap[entry.userID]?.userImage,
+      }));
     } catch (error) {
       console.error('Error fetching user data:', error);
       errorMessage = 'Failed to load user data.';
     }
   };
 
-  // Sort the data based on the selected sorting parameter
-  $: sortedData = leaderboardData.slice().sort((a, b) => {
-    return a[selectedSort] - b[selectedSort];
+  // Fetch leaderboard and user data when the component is mounted
+  onMount(async () => {
+    await fetchLeaderboardData();
+    await fetchUserData();
   });
+
+  // Sort the data based on the selected sorting parameter and filter out invalid entries
+  $: sortedData = leaderboardData
+    .filter((user) => {
+      const fieldMap = {
+        liters: "waterUsage",
+        temperature: "temperature",
+        time: "lastTime",
+      };
+
+      const key = fieldMap[selectedSort];
+      const value = parseFloat(user[key]); // Ensure the value is treated as a number
+      return value > 0; // Keep all valid positive numbers (including decimals) and exclude 0 or invalid entries
+    })
+    .sort((a, b) => {
+      const fieldMap = {
+        liters: "waterUsage",
+        temperature: "temperature",
+        time: "lastTime",
+      };
+
+      const key = fieldMap[selectedSort];
+      return parseFloat(a[key] || 0) - parseFloat(b[key] || 0); // Sort numerically
+    });
 
   // Sorting labels and descriptions
   $: headerDescription = {
@@ -69,12 +103,6 @@
     temperature: "Lowest temperature during shower",
     time: "Shower duration",
   }[selectedSort];
-
-  // Fetch data when the component is mounted
-  onMount(() => {
-    fetchLeaderboardData();
-    fetchUserData();
-  });
 </script>
 
 <VerifyToken /> <!-- Add any required token verification here -->
@@ -129,23 +157,21 @@
   <!-- Other users list -->
   <section class="flex-1 bg-blue-50 py-4 px-6 rounded overflow-y-auto" style="max-height: calc(100vh - 480px);">
     {#each sortedData.slice(3) as user, idx}
-      <article
-        class="flex justify-between items-center mb-0 p-3 rounded {idx % 2 === 0 ? 'bg-[#A0E9FF]' : 'bg-[#CDF5FD]'}"
-      >
+      <article class="flex justify-between items-center mb-0 p-3 rounded {idx % 2 === 0 ? 'bg-[#A0E9FF]' : 'bg-[#CDF5FD]'}">
         <div class="flex items-center">
-          <!-- Show user image or placeholder -->
-          <img 
-            src={userData[user.userID]?.userImage || 'https://via.placeholder.com/40'} 
-            alt="Avatar" 
-            class="w-10 h-10 rounded-full mr-3" 
-          />
+          <img src={user.userImage} alt="Avatar" class="w-10 h-10 rounded-full mr-3" />
           <div>
-            <!-- Show user's name -->
-            <p class="text-sm font-medium">{userData[user.userID]?.name || 'Unknown User'}</p>
+            <p class="text-sm font-medium">{user.name || `User ${user.userID}`}</p>
           </div>
         </div>
         <div class="text-sm font-semibold text-blue-700">
-          {user[selectedSort]} {selectedSort === "time" ? "s" : selectedSort === "temperature" ? "°C" : "L"}
+          {#if selectedSort === "liters"}
+            {parseFloat(user.waterUsage || 0).toFixed(2)} L
+          {:else if selectedSort === "temperature"}
+            {parseFloat(user.temperature || 0).toFixed(2)} °C
+          {:else if selectedSort === "time"}
+            {parseFloat(user.lastTime || 0).toFixed(2)} s
+          {/if}
         </div>
       </article>
     {/each}
