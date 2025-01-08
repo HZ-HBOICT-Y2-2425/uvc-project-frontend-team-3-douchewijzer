@@ -8,7 +8,7 @@
     let timer = null;
     let isEditing = false;
     let showNotification = false;
-    let showEndOfTimerNotification = false; // Nieuwe variabele voor de extra melding
+    let showEndOfTimerNotification = false; // variabele voor de extra melding
     let isPaused = false;
     let isStarted = false;
     let liters = 0;
@@ -17,7 +17,7 @@
     let temperature = 35; // Default temperatuur
     let showTemperatureModal = false;
     let showerTime = 0; // Tijd gedoucht in seconden
-    let isManuallyStopped = false; // Nieuwe variabele om handmatige stop bij te houden
+    let isManuallyStopped = false; // variabele om handmatige stop bij te houden
     let endOfTimerNotificationShown = false; // Variabele om bij te houden of de melding al is getoond
     const dispatch = createEventDispatcher();
 
@@ -66,7 +66,7 @@
         }
     };
 
-    const stopTimer = (dispatchEvent = true) => {
+    const stopTimer = async (dispatchEvent = true) => {
         clearInterval(timer);
         timer = null;
         if (dispatchEvent) {
@@ -78,6 +78,7 @@
                 co2,
                 temperature
             });
+            await saveShowerResult(); // Roep de saveShowerResult functie aan
         }
         dispatch('updateTime', { time: showerTime }); // Dispatch updateTime event with showerTime
     };
@@ -152,6 +153,27 @@
 
     const closeEndOfTimerNotification = () => {
         showEndOfTimerNotification = false;
+    };
+
+    const saveShowerResult = async () => {
+        console.log(`Last time: ${showerTime} seconds`); // Log lastTime in seconds
+        try {
+            const response = await fetch(`http://localhost:3010/statistics/${userID}?temperature=${temperature}&currentCosts=${costs}&waterUsage=${liters}&lastTime=${showerTime}`, { // Add lastTime to URL
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save shower result');
+            }
+
+            const data = await response.json();
+            console.log('Shower result saved:', data);
+        } catch (error) {
+            console.error('Error saving shower result:', error);
+        }
     };
 
     let userID = '';
