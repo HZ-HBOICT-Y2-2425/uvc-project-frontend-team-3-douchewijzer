@@ -158,7 +158,7 @@
     const saveShowerResult = async () => {
         console.log(`Last time: ${showerTime} seconds`); // Log lastTime in seconds
         try {
-            const response = await fetch(`http://localhost:3010/statistics/${userID}?temperature=${temperature}&currentCosts=${costs}&waterUsage=${liters}&lastTime=${showerTime}`, { // Add lastTime to URL
+            const response = await fetch(`http://localhost:3010/statistics/${userID}?temperature=${temperature}&currentCosts=${costs}&waterUsage=${liters}&lastTime=${showerTime}&carbonEmission=${co2}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
