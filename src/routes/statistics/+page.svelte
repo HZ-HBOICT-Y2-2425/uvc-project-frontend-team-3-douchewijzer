@@ -9,6 +9,14 @@
     let chart;
     let waterChartData = [];
     let waterChartLabels = [];
+    let timeChartData = [];
+    let timeChartLabels = [];
+    let CO2ChartData = [];
+    let CO2ChartLabels = [];
+    let temperatureChartData = [];
+    let temperatureChartLabels = [];
+    let kostenChartData = [];
+    let kostenChartLabels = [];
 
     // Fetch the data from the backend when the component is mounted
     onMount(async () => {
@@ -139,6 +147,30 @@
                 waterChartLabels = lastSevenEntries.map(
                     (stat) => `Beurt: ${stat.statisticsID}`,
                 );
+                timeChartData = lastSevenEntries.map(
+                    (stat) => parseFloat(stat.lastTime) || 0,
+                );
+                timeChartLabels = lastSevenEntries.map(
+                    (stat) => `Beurt: ${stat.statisticsID}`,
+                );
+                CO2ChartData = lastSevenEntries.map(
+                    (stat) => parseFloat(stat.carbonEmission) || 0,
+                );
+                CO2ChartLabels = lastSevenEntries.map(
+                    (stat) => `Beurt: ${stat.statisticsID}`,
+                );
+                temperatureChartData = lastSevenEntries.map(
+                    (stat) => parseFloat(stat.temperature) || 0,
+                );
+                temperatureChartLabels = lastSevenEntries.map(
+                    (stat) => `Beurt: ${stat.statisticsID}`,
+                );
+                kostenChartData = lastSevenEntries.map(
+                    (stat) => parseFloat(stat.currentCosts) || 0,
+                );
+                kostenChartLabels = lastSevenEntries.map(
+                    (stat) => `Beurt: ${stat.statisticsID}`,
+                );
 
                 createWaterUsageChart();
             } else {
@@ -166,6 +198,42 @@
                         data: waterChartData,
                         borderColor: "rgba(75, 192, 192, 1)",
                         backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1,
+                    },
+                    {
+                        label: "Tijd (s)",
+                        data: timeChartData,
+                        borderColor: "rgba(191, 75, 192, 1)",
+                        backgroundColor: "rgba(192, 75, 192, 0.2)",
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1,
+                    },
+                    {
+                        label: "CO2 (m2)",
+                        data: CO2ChartData,
+                        borderColor: "rgba(35, 75, 192, 1)",
+                        backgroundColor: "rgba(35, 75, 192, 0.2)",
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1,
+                    },
+                    {
+                        label: "Temperatuur (°C)",
+                        data: temperatureChartData,
+                        borderColor: "rgba(192, 75, 75, 1)",
+                        backgroundColor: "rgba(192, 75, 75, 0.2)",
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1,
+                    },
+                    {
+                        label: "Kosten (€)",
+                        data: kostenChartData,
+                        borderColor: "rgba(192, 192, 75, 1)",
+                        backgroundColor: "rgba(192, 192, 75, 0.2)",
                         borderWidth: 2,
                         fill: true,
                         tension: 0.1,
