@@ -53,19 +53,34 @@
       }
       const users = await response.json();
 
+      const preferenceResponse = await fetch('http://localhost:3010/users/preferences');
+      if (!preferenceResponse.ok) {
+        throw new Error(`Failed to fetch user preferences: ${preferenceResponse.statusText}`);
+      }
+      const preferences = await preferenceResponse.json();
+
       // Create a map of userID to user details for quick lookup
       const userMap = {};
+      const preferenceMap = preferences.reduce((map, pref) => {
+        if (pref.leaderbordUploadPreference === 1) {
+          map[pref.userID] = true;
+        }
+        return map;
+      }, {});
+
       users.forEach((user) => {
-        const emojiChar = String.fromCodePoint(parseInt(user.userImage, 16)); // Convert Unicode code point to emoji character
-        const userImage = emoji.replace_unified(emojiChar); // Convert emoji to HTML <img> tag
-        userMap[user.userID] = {
-          name: user.name,
-          userImage: userImage || "https://via.placeholder.com/40", // Default to placeholder if no image
-        };
+        if (preferenceMap[user.userID]) {
+          const emojiChar = String.fromCodePoint(parseInt(user.userImage, 16)); // Convert Unicode code point to emoji character
+          const userImage = emoji.replace_unified(emojiChar); // Convert emoji to HTML <img> tag
+          userMap[user.userID] = {
+            name: user.name,
+            userImage: userImage || "https://via.placeholder.com/40", // Default to placeholder if no image
+          };
+        }
       });
 
       // Update leaderboardData with user details
-      leaderboardData = leaderboardData.map((entry) => ({
+      leaderboardData = leaderboardData.filter(entry => userMap[entry.userID]).map((entry) => ({
         ...entry,
         name: userMap[entry.userID]?.name || `User ${entry.userID}`, // Default to "User {userID}" if no name
         userImage: userMap[entry.userID]?.userImage,
