@@ -16,6 +16,7 @@
         "/leaderboard": "Leaderboard",
         "/statistics": "Statestieken",
         "/settings": "Settings",
+        "/milestones": "Mijlpalen",
         "/badges": "Jouw badges",
     };
 

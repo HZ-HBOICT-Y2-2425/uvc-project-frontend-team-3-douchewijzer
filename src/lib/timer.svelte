@@ -2,6 +2,7 @@
     import { createEventDispatcher } from "svelte";
     import { onMount } from "svelte";
     import DecodeToken from "./DecodeToken.svelte";
+    import { updateProgress } from '$lib/actions';
 
     let time = 0;
     let userTime = 0;
@@ -185,7 +186,15 @@
             console.log("Shower result saved:", data);
         } catch (error) {
             console.error("Error saving shower result:", error);
-        }
+        }  try {
+                console.log("Go!");
+                const ID = userID;
+                await updateProgress(ID, liters);
+                return { success: true };
+            } catch (error) {
+              console.error(error);
+              return { success: false };
+            }
     };
 
     let userID = "";
