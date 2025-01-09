@@ -105,9 +105,9 @@ let coins = 0;
               <span class="text-sm font-medium text-gray-600">Reward Points:</span>
               <span class="ml-2 text-lg font-bold text-blue-700">{goal.coinValue} points</span>
             </div>
-            <form method="POST" action="?/claimMilestone">
-              <input type="hidden" name="_method" value="PUT" />
-              <input type="hidden" name="goalID" value={goal.milestoneID} />
+            <form method="POST" action="?/claimGoal">
+              <input type="hidden" name="_method" value="DELETE" />
+              <input type="hidden" name="goalID" value={goal.goalID} />
               <input type="hidden" name="userID" value={userID} />
               <input type="hidden" name="coinValue" value={goal.coinValue} />
               <input type="hidden" name="dataType" value={goal.dataType} />

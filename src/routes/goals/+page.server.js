@@ -77,7 +77,7 @@ export const actions = {
                 method: 'DELETE',
             });
 
-            const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${updatedCoins}`, {
+            const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coinValue}`, {
                 method: 'PUT',
             });
 
