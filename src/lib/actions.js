@@ -1,16 +1,22 @@
+import { data } from 'autoprefixer';
+
 /** @type {import('./$types').PageLoad} */
-export async function updateProgress(userID)  {
+export async function updateProgress(userID, liters = null)  {
     try {
 
   if (!userID) {
     return json({ success: false, message: 'UserID is required' }, { status: 400 });
   }
 
+  console.log(liters);
+
   const res = await fetch(`http://localhost:3010/goalsMilestones/goals?userID=${userID}`)
-
   const goalText = await res.text(); if (!goalText) { throw new Error('Empty response body'); }
-
   const goals = JSON.parse(goalText);
+
+  const resMilestones =  await fetch(`http://localhost:3010/goalsMilestones/goals?userID=${userID}`)
+  const milestoneText = await resMilestones.text(); if (!milestoneText) { throw new Error('Empty response body'); }
+  const milestones = JSON.parse(milestoneText);
 
   const updatedGoals = await Promise.all(
     goals.map(async (goal) => {
@@ -22,6 +28,44 @@ export async function updateProgress(userID)  {
         updatedProgress += 1;
 
         const putResponse = await fetch(`http://localhost:3010/goalsMilestones/goals/${goal.goalID}?goalProgress=${updatedProgress}`, {
+            method: 'PUT',
+            }); 
+           }
+          } else if (goal.dataType == 2) {
+            if (goal.goalProgress < goal.goalAmount) {
+                let updatedProgress = goal.goalProgress;
+                let savedWater = 100 - liters;
+
+                if (savedWater > 0) {
+                    updatedProgress = updatedProgress += savedWater;
+                }
+
+                if (updatedProgress > goal.goalAmount) {
+                    updatedProgress = goal.goalAmount;
+                }
+
+                const putResponse = await fetch(`http://localhost:3010/goalsMilestones/goals/${goal.goalID}?goalProgress=${updatedProgress}`, {
+                    method: 'PUT',
+                }); 
+            }
+          }
+        }
+    })
+  )
+
+  const updatedMilestones = await Promise.all(
+    goals.map(async (milestone) => {
+      if (milestone.userID == userID)  {
+        if (milestone.dataType == 1) {
+            if (milestone.milestoneProgress < milestone.milestoneAmount) {
+                console.log("progress is geen probleem!")
+        let updatedProgress = milestone.milestoneProgress;
+
+        updatedProgress += 1;
+
+        console.log(updatedProgress);
+
+        const putResponse = await fetch(`http://localhost:3010/goalsMilestones/milestones/${milestone.milestoneID}?goalProgress=${updatedProgress}`, {
             method: 'PUT',
             }); 
            }

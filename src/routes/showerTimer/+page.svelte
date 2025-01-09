@@ -62,7 +62,7 @@
 
             try {
                 const ID = userID;
-                await updateProgress(ID);
+                await updateProgress(ID, liters);
                 return { success: true };
             } catch (error) {
               console.error(error);

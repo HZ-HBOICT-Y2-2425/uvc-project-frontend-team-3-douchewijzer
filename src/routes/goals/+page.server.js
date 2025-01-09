@@ -30,12 +30,22 @@ export const actions = {
         const formData = await request.formData();
         const goalDescription = formData.get('goalDescription');
         const goalAmount = parseInt(formData.get('goalAmount'));
-        const coinValue = parseInt(formData.get('coinValue'));
         const id = parseInt(formData.get('userID'));
-        console.log(goalDescription)
+        let dataType = 1;
+        let fullGoalDescription = '';
+        let coinValue;
+
+        if (goalDescription == "douche met timer") {
+            fullGoalDescription = `Douche ${goalAmount} keer met de timer`
+            coinValue = goalAmount * 50;
+        } else {
+            fullGoalDescription = `Bespaar ${goalAmount} liter water`
+            dataType = 2;
+            coinValue = goalAmount * 10;
+        }
     
         try {
-          const res = await fetch(`http://localhost:3010/goalsMilestones/goals?userID=${id}&goalDescription=${goalDescription}&goalProgress=0&goalAmount=${goalAmount}&coinValue=${coinValue}&dataType=1`, {
+          const res = await fetch(`http://localhost:3010/goalsMilestones/goals?userID=${id}&goalDescription=${fullGoalDescription}&goalProgress=0&goalAmount=${goalAmount}&coinValue=${coinValue}&dataType=${dataType}`, {
             method: 'POST',
           });
     

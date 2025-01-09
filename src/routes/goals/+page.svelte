@@ -51,21 +51,14 @@ let name = '';
         name="userID"
         value={userID}
     />
-    <input
-        type="text"
-        name= "goalDescription"
-        placeholder="Enter goal description"
-      />
+    <select name= "goalDescription" class="block w-full px-3 py-2 mb-5 border border-gray-300 rounded-md">
+      <option value="douche met timer">Douche met Timer</option>
+      <option value="bespaar water">Bespaar water</option>
+      </select>
       <input
         type="number"
         name= "goalAmount"
-        placeholder="Enter amount value"
-        min="1"
-      />
-      <input
-        type="number"
-        name= "coinValue"
-        placeholder="Enter points"
+        placeholder="hoevaak/hoeveel?"
         min="1"
       />
     <button type="submit">Add Goal</button>
