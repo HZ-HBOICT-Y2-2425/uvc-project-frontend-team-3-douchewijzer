@@ -14,6 +14,7 @@
     let liters = 0;
     let costs = 0;
     let co2 = 0;
+    let gas = 0; // Nieuwe variabele voor gas
     let temperature = 35; // Default temperatuur
     let showTemperatureModal = false;
     let showerTime = 0; // Tijd gedoucht in seconden
@@ -23,6 +24,7 @@
 
     const baseCostPerMinute = 0.037; // Basis kosten per minuut bij 35 graden
     const baseCO2PerMinute = 0.030; // Basis CO2-uitstoot per minuut bij 35 graden (kg)
+    const baseGasPerMinute = 0.020; // Basis gasverbruik per minuut bij 35 graden (m³)
 
     const calculateExponentialFactor = (temp) => {
         const baseTemp = 35;
@@ -76,6 +78,7 @@
                 liters,
                 costs,
                 co2,
+                gas,
                 temperature
             });
             await saveShowerResult(); // Roep de saveShowerResult functie aan
@@ -89,10 +92,12 @@
 
         costs += baseCostPerMinute * factor / 60; // Kosten per seconde
         co2 += baseCO2PerMinute * factor / 60; // CO2-uitstoot per seconde
+        gas += baseGasPerMinute * factor / 60; // Gasverbruik per seconde
 
         dispatch('updateLiters', { liters });
         dispatch('updateCosts', { costs });
         dispatch('updateCO2', { co2 });
+        dispatch('updateGas', { gas }); // Dispatch updateGas event
         dispatch('updateTemperature', { temperature });
         dispatch('updateTime', { time: showerTime }); // Ensure updateTime is dispatched here as well
     };
@@ -103,6 +108,7 @@
         liters = 0;
         costs = 0;
         co2 = 0;
+        gas = 0;
         showerTime = 0; // Reset de gedouchte tijd
         showNotification = false;
         showEndOfTimerNotification = false; // Reset de extra melding
@@ -111,6 +117,7 @@
         dispatch('updateLiters', { liters });
         dispatch('updateCosts', { costs });
         dispatch('updateCO2', { co2 });
+        dispatch('updateGas', { gas }); // Dispatch updateGas event
         dispatch('updateTemperature', { temperature });
     };
 
@@ -158,7 +165,7 @@
     const saveShowerResult = async () => {
         console.log(`Last time: ${showerTime} seconds`); // Log lastTime in seconds
         try {
-            const response = await fetch(`http://localhost:3010/statistics/${userID}?temperature=${temperature}&currentCosts=${costs}&waterUsage=${liters}&lastTime=${showerTime}&carbonEmission=${co2}`, {
+            const response = await fetch(`http://localhost:3010/statistics/${userID}?temperature=${temperature}&currentCosts=${costs}&waterUsage=${liters}&lastTime=${showerTime}&carbonEmission=${co2}&gasUsage=${gas}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

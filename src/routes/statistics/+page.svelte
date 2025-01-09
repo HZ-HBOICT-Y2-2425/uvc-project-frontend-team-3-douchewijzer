@@ -198,44 +198,29 @@
 <VerifyToken />
 <DecodeToken bind:userID />
 
-<table
-    class="htmlTable2 w-11/12 border-collapse bg-blue-200 rounded-3xl p-8 m-8 border border-black mb-72"
-    style="margin-left: 20%; width: 60%; height: 40%;"
->
-    <thead class="columnNames2">
-        <tr>
-            <th class="border border-gray-300 p-2 bg-blue-900 text-white"
-                >Eenheden</th
-            >
-            <th class="border border-gray-300 p-2 bg-blue-900 text-white"
-                >Laatste sessie</th
-            >
-            <th class="border border-gray-300 p-2 bg-blue-900 text-white"
-                >Gemiddeld</th
-            >
-            <th class="border border-gray-300 p-2 bg-blue-900 text-white"
-                >Totaal</th
-            >
-        </tr>
-    </thead>
-    <tbody class="tableRow">
-        {#each rows as row (row.id)}
+<div class="container mx-auto px-4">
+    <table class="min-w-full bg-blue-200 rounded-3xl border border-black mb-8">
+        <thead class="bg-blue-900 text-white">
             <tr>
-                <td class="border border-gray-300 p-2 bg-white">{row.unit}</td>
-                <td class="border border-gray-300 p-2 bg-white"
-                    >{row.last_session}</td
-                >
-                <td class="border border-gray-300 p-2 bg-white"
-                    >{row.average}</td
-                >
-                <td class="border border-gray-300 p-2 bg-white">{row.total}</td>
+                <th class="border border-gray-300 p-2">Eenheden</th>
+                <th class="border border-gray-300 p-2">Laatste sessie</th>
+                <th class="border border-gray-300 p-2">Gemiddeld</th>
+                <th class="border border-gray-300 p-2">Totaal</th>
             </tr>
-        {/each}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {#each rows as row (row.id)}
+                <tr class="bg-white">
+                    <td class="border border-gray-300 p-2">{row.unit}</td>
+                    <td class="border border-gray-300 p-2">{row.last_session}</td>
+                    <td class="border border-gray-300 p-2">{row.average}</td>
+                    <td class="border border-gray-300 p-2">{row.total}</td>
+                </tr>
+            {/each}
+        </tbody>
+    </table>
+</div>
 
-<div
-    style="margin-left: 17.5%; width: 65%; height: 100%; margin-top: -12%; margin-bottom: 10%;"
->
+<div class="container mx-auto px-4 mb-10">
     <canvas id="waterUsageChart"></canvas>
 </div>
