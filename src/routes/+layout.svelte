@@ -16,6 +16,7 @@
         "/leaderboard": "Leaderboard",
         "/statistics": "Statistics",
         "/settings": "Settings",
+        "/milestones": "Mijlpalen"
     };
 
     onMount(() => {

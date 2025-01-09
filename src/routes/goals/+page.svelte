@@ -35,7 +35,9 @@ let name = '';
       <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={() => (showPopup = true)}>Doel Maken</button>
   </div>
   <div>
+    <a href="/milestones">
       <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800">mijlpalen</button>
+    </a>
   </div>
 </div>
 
