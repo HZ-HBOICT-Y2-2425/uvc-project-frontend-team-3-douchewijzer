@@ -74,13 +74,17 @@
   };
 
   onMount(async () => {
-    document.documentElement.style.overflow = 'hidden'; // Disable scrolling
+    if (typeof window !== 'undefined') {
+      document.documentElement.style.overflow = 'hidden'; // Disable scrolling
+    }
     await fetchLeaderboardData();
     await fetchUserData();
   });
 
   onDestroy(() => {
-    document.documentElement.style.overflow = ''; // Re-enable scrolling
+    if (typeof window !== 'undefined') {
+      document.documentElement.style.overflow = ''; // Re-enable scrolling
+    }
   });
 
   $: sortedData = leaderboardData
