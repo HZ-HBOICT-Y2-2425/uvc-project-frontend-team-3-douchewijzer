@@ -38,7 +38,7 @@
     };
 </script>
 
-<header class="bg-[#00A9FF] py-2 px-6 text-white text-center sticky top-0 z-10 rounded flex items-center justify-between">
+<header class="bg-[#00A9FF] py-2 px-6 text-white text-center sticky top-0 z-10 flex items-center justify-between">
     <img src="/Douche_Wijzer_Logo.png" alt="Logo" class="h-16">
     <!-- Dynamische titel -->
     <h1 class="text-lg font-bold flex-grow text-center">{pageTitle}</h1>
@@ -48,8 +48,9 @@
     </button>
 </header>
 
-
-<slot></slot>
+<main class:mt-4={$page.url.pathname !== '/leaderboard'}>
+    <slot></slot>
+</main>
 
 <nav class="fixed bottom-0 w-full bg-blue-100 flex justify-around py-2 border-t-2 border-gray-300 shadow-md">
     <a href="/" class="text-gray-700 text-2xl flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-300 ease-in-out hover:bg-blue-200 hover:text-blue-700" aria-label="Home">
