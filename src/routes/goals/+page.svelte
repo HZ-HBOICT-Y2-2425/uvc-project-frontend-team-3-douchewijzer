@@ -35,7 +35,10 @@ let name = '';
       <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={() => (showPopup = true)}>Doel Maken</button>
   </div>
   <div>
-      <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={test}>mijlpalen</button>
+    <form method="POST" action="?/updateProgress" >
+      <input type="hidden" name="userID" value={userID}>
+      <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800">mijlpalen</button>
+    </form>
   </div>
 </div>
 
@@ -108,6 +111,8 @@ let name = '';
                 <form method="POST" action="?/claimGoal">
                   <input type="hidden" name="_method" value="DELETE" />
                   <input type="hidden" name="goalID" value={goal.goalID} />
+                  <input type="hidden" name="userID" value={userID} />
+                  <input type="hidden" name="coinValue" value={goal.coinValue} />
                   <button
                   class="bg-blue-600 text-white border-none px-3 py-1 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800 float-right
                     {goal.goalProgress < goal.goalAmount ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-800'}"

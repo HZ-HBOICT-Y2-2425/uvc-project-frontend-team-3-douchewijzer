@@ -35,7 +35,7 @@ export const actions = {
         console.log(goalDescription)
     
         try {
-          const res = await fetch(`http://localhost:3010/goalsMilestones/goals?userID=${id}&goalDescription=${goalDescription}&goalProgress=6&goalAmount=${goalAmount}&coinValue=${coinValue}`, {
+          const res = await fetch(`http://localhost:3010/goalsMilestones/goals?userID=${id}&goalDescription=${goalDescription}&goalProgress=0&goalAmount=${goalAmount}&coinValue=${coinValue}`, {
             method: 'POST',
           });
     
@@ -56,13 +56,19 @@ export const actions = {
             const formData = await request.formData();
             const method = formData.get('_method');
             const goalID = formData.get('goalID');
+            const userID = formData.get('userID');
+            const coinValue = formData.get('coinValue');
         
             if (method !== 'DELETE') {
             return { success: false, error: 'Invalid request method' };
 
             }
-            const res = await fetch(`http://localhost:3010/goalsMilestones/goals/${goalID}`, {
+            const deleteResponse = await fetch(`http://localhost:3010/goalsMilestones/goals/${goalID}`, {
                 method: 'DELETE',
+            });
+
+            const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coinValue}`, {
+                method: 'PUT',
             });
 
             if (!res.ok) {
@@ -73,5 +79,50 @@ export const actions = {
             console.error(error);
             return {succes: false, error: error.message};
         }
+      },
+
+      updateProgress: async ({request}) => {
+        try {
+      const formData = await request.formData();
+      const userID = formData.get('userID');
+
+      if (!userID) {
+        return json({ success: false, message: 'UserID is required' }, { status: 400 });
       }
+
+      const res = await fetch(`http://localhost:3010/goalsMilestones/goals?userID=${userID}`)
+
+      const goalText = await res.text(); if (!goalText) { throw new Error('Empty response body'); }
+
+      const goals = JSON.parse(goalText);
+
+      const updatedGoals = await Promise.all(
+        goals.map(async (goal) => {
+          if (goal.userID == userID)  {
+            if (goal.dataType == 1) {
+            let updatedProgress = goal.goalProgress;
+
+            updatedProgress += 1;
+
+            console.log(updatedProgress);
+
+            console.log(userID)
+
+            const putResponse = await fetch(`http://localhost:3010/goalsMilestones/goals/${goal.goalID}?goalProgress=${updatedProgress}`, {
+                method: 'PUT',
+                }); 
+              }
+            }
+        })
+      )
+
+      if (!res.ok) {
+        throw new Error(`Failed to add goal: ${res.statusText}`);
+      }
+    return { succes: true }  
+    } catch (error) {
+        console.error(error);
+        return {succes: false, error: error.message};
+    }
+  }
 }
