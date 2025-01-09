@@ -121,7 +121,7 @@
                         unit: "CO2",
                         last_session: `${latestStatistics.carbonEmission || "---"} g`,
                         average: `${averageCO2} g`,
-                        total: "---",
+                        total: `${totalCO2.toFixed(2)} g`,
                     },
                     {
                         id: 6,
