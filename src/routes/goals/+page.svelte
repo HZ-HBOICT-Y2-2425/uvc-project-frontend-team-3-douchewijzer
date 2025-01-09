@@ -45,7 +45,7 @@ let coins = 0;
 {#if showPopup}
 <form method='POST' action="?/addGoal">
 <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50"></div>
-<div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-blue-600 p-10 rounded-2xl shadow-lg text-center z-50 w-4/5 max-w-lg">
+<div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-blue-600 p-6 rounded-2xl shadow-lg text-center z-50 w-11/12 max-w-lg">
     <p class="text-2xl mb-5">doel maken</p>
     <input 
         type="hidden"
@@ -61,9 +61,10 @@ let coins = 0;
         name= "goalAmount"
         placeholder="hoevaak/hoeveel?"
         min="1"
+        class="block w-full px-3 py-2 mb-5 border border-gray-300 rounded-md"
       />
-    <button type="submit">Add Goal</button>
-    <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={closePopUp}>Sluiten</button>
+    <button type="submit" class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800 w-full">Add Goal</button>
+    <button class="bg-gray-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-gray-800 w-full" on:click={closePopUp}>Sluiten</button>
 </div>
 </form>
 {/if}
