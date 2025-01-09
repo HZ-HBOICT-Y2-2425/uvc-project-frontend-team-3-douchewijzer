@@ -108,11 +108,11 @@
         case 1:
           return true;
         case 2:
-          return averageTemperature <= 26;
+          return averageTemperature <= 28;
         case 3:
-          return averageTemperature <= 20;
+          return averageTemperature <= 22;
         case 4:
-          return averageTemperature <= 16;
+          return averageTemperature <= 18;
         case 5:
           return coins >= 1000;
         case 6:
@@ -162,13 +162,14 @@
     <p class="text-center text-gray-500">Laden... Als dit lang duurt, herlaad de pagina</p>
   {:else if filteredBadges.length > 0}
     {#each filteredBadges as badge}
-      <div class="bg-white rounded-lg shadow-md overflow-hidden p-2 flex flex-col items-center aspect-w-1 aspect-h-1 border border-black">
-        <img src="{badge.badgeImage}" alt="Badge" class="w-full h-full object-cover mb-2" />
-        <p class="text-sm font-semibold text-center">{badge.badgeName}</p>
-        <p class="text-xs text-gray-500">{badge.badgeDescription}</p>
+      <div class="bg-white rounded-lg shadow-md overflow-hidden p-4 flex flex-col items-center aspect-w-1 aspect-h-2 border border-black">
+        <img src="{badge.badgeImage}" alt="Badge" class="w-full h-auto object-cover mb-4" />
+        <p class="text-sm font-semibold text-center mb-1">{badge.badgeName}</p>
+        <p class="text-xs text-gray-500 text-center">{badge.badgeDescription}</p>
       </div>
     {/each}
   {:else}
     <p class="text-center text-gray-500">{errorMessage || "Herlaad alstublieft deze pagina"}</p>
   {/if}
 </section>
+
