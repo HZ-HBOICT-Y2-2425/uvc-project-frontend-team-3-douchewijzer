@@ -1,65 +1,49 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import VerifyToken from '$lib/VerifyToken.svelte';
-  import DecodeToken from '$lib/DecodeToken.svelte';
   import TopUser from '$lib/TopUser.svelte';
   import EmojiConvertor from 'emoji-js';
 
-  let leaderboardData = []; // Holds the leaderboard data
-  let selectedSort: "liters" | "temperature" | "time" = "liters"; // Sorting state
-  let errorMessage = ''; // For handling errors
-  let loading = true; // For loading state
+  let leaderboardData = [];
+  let selectedSort: "liters" | "temperature" | "time" = "liters";
+  let errorMessage = '';
+  let loading = true;
 
   const emoji = new EmojiConvertor();
   emoji.img_set = 'apple';
   emoji.img_sets.apple.path = 'https://cdnjs.cloudflare.com/ajax/libs/emoji-datasource-apple/6.0.1/img/apple/64/';
-  emoji.replace_mode = 'img'; // Ensures the output is <img>
+  emoji.replace_mode = 'img';
 
-  // Function to fetch the leaderboard data
   const fetchLeaderboardData = async () => {
-    loading = true; // Start loading
+    loading = true;
     try {
       const response = await fetch('http://localhost:3010/statistics');
-      if (!response.ok) {
-        throw new Error(`Failed to fetch leaderboard data: ${response.statusText}`);
-      }
+      if (!response.ok) throw new Error('Failed to fetch leaderboard data');
       const data = await response.json();
-
-      // Process the data to keep the latest entry for each user
       const latestEntries = {};
       data.forEach(entry => {
         if (!latestEntries[entry.userID] || entry.statisticsID > latestEntries[entry.userID].statisticsID) {
           latestEntries[entry.userID] = entry;
         }
       });
-
-      leaderboardData = Object.values(latestEntries); // Update leaderboard data with latest entries
-      console.log('Leaderboard Data:', leaderboardData); // Log to confirm the data
-
+      leaderboardData = Object.values(latestEntries);
     } catch (error) {
-      console.error('Error fetching leaderboard data:', error);
       errorMessage = 'Failed to load leaderboard data.';
     } finally {
-      loading = false; // End loading
+      loading = false;
     }
   };
 
-  // Function to fetch user data and enrich leaderboardData
   const fetchUserData = async () => {
     try {
       const response = await fetch('http://localhost:3010/users');
-      if (!response.ok) {
-        throw new Error(`Failed to fetch user data: ${response.statusText}`);
-      }
+      if (!response.ok) throw new Error('Failed to fetch user data');
       const users = await response.json();
 
       const preferenceResponse = await fetch('http://localhost:3010/users/preferences');
-      if (!preferenceResponse.ok) {
-        throw new Error(`Failed to fetch user preferences: ${preferenceResponse.statusText}`);
-      }
+      if (!preferenceResponse.ok) throw new Error('Failed to fetch user preferences');
       const preferences = await preferenceResponse.json();
 
-      // Create a map of userID to user details for quick lookup
       const userMap = {};
       const preferenceMap = preferences.reduce((map, pref) => {
         if (pref.leaderbordUploadPreference === 1) {
@@ -68,60 +52,48 @@
         return map;
       }, {});
 
-      users.forEach((user) => {
+      users.forEach(user => {
         if (preferenceMap[user.userID]) {
-          const emojiChar = String.fromCodePoint(parseInt(user.userImage, 16)); // Convert Unicode code point to emoji character
-          const userImage = emoji.replace_unified(emojiChar); // Convert emoji to HTML <img> tag
+          const emojiChar = String.fromCodePoint(parseInt(user.userImage, 16));
+          const userImage = emoji.replace_unified(emojiChar);
           userMap[user.userID] = {
             name: user.name,
-            userImage: userImage || "https://via.placeholder.com/40", // Default to placeholder if no image
+            userImage: userImage || "https://via.placeholder.com/40",
           };
         }
       });
 
-      // Update leaderboardData with user details
-      leaderboardData = leaderboardData.filter(entry => userMap[entry.userID]).map((entry) => ({
+      leaderboardData = leaderboardData.filter(entry => userMap[entry.userID]).map(entry => ({
         ...entry,
-        name: userMap[entry.userID]?.name || `User ${entry.userID}`, // Default to "User {userID}" if no name
+        name: userMap[entry.userID]?.name || `User ${entry.userID}`,
         userImage: userMap[entry.userID]?.userImage,
       }));
     } catch (error) {
-      console.error('Error fetching user data:', error);
       errorMessage = 'Failed to load user data.';
     }
   };
 
-  // Fetch leaderboard and user data when the component is mounted
   onMount(async () => {
+    document.documentElement.style.overflow = 'hidden'; // Disable scrolling
     await fetchLeaderboardData();
     await fetchUserData();
   });
 
-  // Sort the data based on the selected sorting parameter and filter out invalid entries
-  $: sortedData = leaderboardData
-    .filter((user) => {
-      const fieldMap = {
-        liters: "waterUsage",
-        temperature: "temperature",
-        time: "lastTime",
-      };
+  onDestroy(() => {
+    document.documentElement.style.overflow = ''; // Re-enable scrolling
+  });
 
+  $: sortedData = leaderboardData
+    .filter(user => {
+      const fieldMap = { liters: "waterUsage", temperature: "temperature", time: "lastTime" };
       const key = fieldMap[selectedSort];
-      const value = parseFloat(user[key]); // Ensure the value is treated as a number
-      return value > 0; // Keep all valid positive numbers (including decimals) and exclude 0 or invalid entries
+      return parseFloat(user[key]) > 0;
     })
     .sort((a, b) => {
-      const fieldMap = {
-        liters: "waterUsage",
-        temperature: "temperature",
-        time: "lastTime",
-      };
-
-      const key = fieldMap[selectedSort];
-      return parseFloat(a[key] || 0) - parseFloat(b[key] || 0); // Sort numerically
+      const fieldMap = { liters: "waterUsage", temperature: "temperature", time: "lastTime" };
+      return parseFloat(a[fieldMap[selectedSort]] || 0) - parseFloat(b[fieldMap[selectedSort]] || 0);
     });
 
-  // Sorting labels and descriptions
   $: headerDescription = {
     liters: "Liters of water used",
     temperature: "Lowest temperature during shower",
