@@ -19,6 +19,7 @@
         throw new Error(`Failed to fetch badges: ${response.statusText}`);
       }
       badges = await response.json();
+      console.log("Badges fetched:", badges);
     } catch (error) {
       console.error("Error fetching badges:", error);
       errorMessage = "Failed to load badges.";
@@ -37,19 +38,25 @@
       if (response.ok) {
         const data = await response.json();
 
-        const sortedData = data.sort(
-          (a, b) => b.statisticsID - a.statisticsID
-        );
+        // Calculate average temperature
+        const validTemperatures = data
+          .map((stat) => parseFloat(stat.temperature))
+          .filter((temp) => !isNaN(temp));
+
+        const averageTemperature =
+          validTemperatures.reduce((sum, temp) => sum + temp, 0) /
+          validTemperatures.length;
+
+        console.log("Calculated average temperature:", averageTemperature);
+
+        const sortedData = data.sort((a, b) => b.statisticsID - a.statisticsID);
         const latestStatistics = sortedData[0];
 
         const statisticsEntriesCount = data.length;
 
-        userStatistics = latestStatistics;
-
+        userStatistics = { ...latestStatistics, averageTemperature };
         console.log("Processed statistics:", userStatistics);
         console.log("Total statistics entries:", statisticsEntriesCount);
-
-        filterBadges(statisticsEntriesCount);
       } else {
         console.error("Failed to fetch user statistics");
         errorMessage = "Failed to load user statistics.";
@@ -76,8 +83,9 @@
     }
   };
 
-  const filterBadges = (statisticsEntriesCount) => {
+  const filterBadges = () => {
     if (!userStatistics || !userData || badges.length === 0) {
+      console.log("Not all data is ready for filtering badges.");
       return;
     }
 
@@ -85,13 +93,14 @@
     const coins = userData.coins;
 
     if (isNaN(averageTemperature) || isNaN(coins)) {
+      console.log("Invalid averageTemperature or coins.");
       return;
     }
 
     filteredBadges = badges.filter((badge) => {
       switch (badge.badgeID) {
         case 1:
-          return averageTemperature < 20;
+          return true;
         case 2:
           return averageTemperature <= 26;
         case 3:
@@ -105,28 +114,35 @@
         case 7:
           return coins >= 1000;
         case 8:
-          return statisticsEntriesCount >= 1;
+          return userStatistics.statisticsEntriesCount >= 1;
         case 9:
-          return statisticsEntriesCount >= 10;
+          return userStatistics.statisticsEntriesCount >= 10;
         case 10:
-          return statisticsEntriesCount >= 100;
+          return userStatistics.statisticsEntriesCount >= 100;
         default:
           return false;
       }
     });
 
     unfilteredBadges = badges.filter((badge) => !filteredBadges.includes(badge));
-    loading = false;
+    console.log("Filtered badges:", filteredBadges);
   };
 
   onMount(async () => {
     try {
-      await Promise.all([fetchBadges(), fetchUserStatistics(), fetchUserData()]);
+      await fetchBadges();
+      await fetchUserStatistics();
+      await fetchUserData();
+
+      // Ensure data is fully loaded before filtering badges
+      if (badges.length > 0 && userStatistics && userData) {
+        filterBadges();
+      }
     } catch (error) {
       console.error("Error in fetching data during onMount:", error);
       errorMessage = "An error occurred while fetching data.";
     } finally {
-      loading = false;
+      loading = false; // Ensure loading is only set to false after all processing
     }
   });
 </script>
@@ -136,10 +152,10 @@
 
 <section class="p-4 bg-white grid grid-cols-2 pb-16 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
   {#if loading}
-    <p class="text-center text-gray-500">Laden...  Als dit lang duurt, ververs de pagina</p>
+    <p class="text-center text-gray-500">Laden... Als dit lang duurt, ververs de pagina</p>
   {:else if filteredBadges.length > 0}
     {#each filteredBadges as badge}
-    <div class="bg-white rounded-lg shadow-md overflow-hidden p-2 flex flex-col items-center aspect-w-1 aspect-h-1 border border-black">
+      <div class="bg-white rounded-lg shadow-md overflow-hidden p-2 flex flex-col items-center aspect-w-1 aspect-h-1 border border-black">
         <img src="{badge.badgeImage}" alt="Badge" class="w-full h-full object-cover mb-2" />
         <p class="text-sm font-semibold text-center">{badge.badgeName}</p>
         <p class="text-xs text-gray-500">{badge.badgeDescription}</p>
