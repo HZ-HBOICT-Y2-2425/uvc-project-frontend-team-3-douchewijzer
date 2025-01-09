@@ -18,13 +18,13 @@
 
 </script>
 
-<LatestBadges />
-
 <VerifyToken />
 
 <StatisticsData />
 
 <Timer on:timerEnd={handleTimerEnd} on:click={navigateToShowerTimer} />
+
+<LatestBadges />
 
 <style>
     @import '$lib/app.css';
