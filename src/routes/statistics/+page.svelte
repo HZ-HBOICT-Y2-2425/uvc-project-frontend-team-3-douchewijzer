@@ -59,7 +59,7 @@
                         countTemperature++;
                     }
                     if (stat.lastTime) {
-                        totalTime += parseFloat(stat.lastTime);
+                        totalTime += parseFloat(stat.lastTime) / 60;
                         countTime++;
                     }
                     if (stat.gasUsage) {
@@ -113,9 +113,9 @@
                     {
                         id: 3,
                         unit: "Tijd",
-                        last_session: `${latestStatistics.lastTime || "---"} seconden`,
-                        average: `${averageTime} seconden`,
-                        total: `${totalTime.toFixed(2)} seconden`,
+                        last_session: `${latestStatistics.lastTime ? (latestStatistics.lastTime / 60).toFixed(2) : "---"} minuten`,
+                        average: `${averageTime} minuten`,
+                        total: `${totalTime.toFixed(2)} minuten`,
                     },
                     {
                         id: 4,
