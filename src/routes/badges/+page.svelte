@@ -27,45 +27,51 @@
   };
 
   const fetchUserStatistics = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:3010/statistics/${userID}`,
-        {
-          mode: "cors",
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-
-        // Calculate average temperature
-        const validTemperatures = data
-          .map((stat) => parseFloat(stat.temperature))
-          .filter((temp) => !isNaN(temp));
-
-        const averageTemperature =
-          validTemperatures.reduce((sum, temp) => sum + temp, 0) /
-          validTemperatures.length;
-
-        console.log("Calculated average temperature:", averageTemperature);
-
-        const sortedData = data.sort((a, b) => b.statisticsID - a.statisticsID);
-        const latestStatistics = sortedData[0];
-
-        const statisticsEntriesCount = data.length;
-
-        userStatistics = { ...latestStatistics, averageTemperature };
-        console.log("Processed statistics:", userStatistics);
-        console.log("Total statistics entries:", statisticsEntriesCount);
-      } else {
-        console.error("Failed to fetch user statistics");
-        errorMessage = "Failed to load user statistics.";
+  try {
+    const response = await fetch(
+      `http://localhost:3010/statistics/${userID}`,
+      {
+        mode: "cors",
       }
-    } catch (error) {
-      console.error("Error fetching user statistics:", error);
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+
+      // Calculate average temperature
+      const validTemperatures = data
+        .map((stat) => parseFloat(stat.temperature))
+        .filter((temp) => !isNaN(temp));
+
+      const averageTemperature =
+        validTemperatures.reduce((sum, temp) => sum + temp, 0) /
+        validTemperatures.length;
+
+      console.log("Calculated average temperature:", averageTemperature);
+
+      const sortedData = data.sort((a, b) => b.statisticsID - a.statisticsID);
+      const latestStatistics = sortedData[0];
+
+      const statisticsEntriesCount = data.length; // Include this count
+
+      userStatistics = { 
+        ...latestStatistics, 
+        averageTemperature, 
+        statisticsEntriesCount // Add this property to the userStatistics object
+      };
+
+      console.log("Processed statistics:", userStatistics);
+      console.log("Total statistics entries:", statisticsEntriesCount);
+    } else {
+      console.error("Failed to fetch user statistics");
       errorMessage = "Failed to load user statistics.";
     }
-  };
+  } catch (error) {
+    console.error("Error fetching user statistics:", error);
+    errorMessage = "Failed to load user statistics.";
+  }
+};
+
 
   const fetchUserData = async () => {
     try {
@@ -114,6 +120,7 @@
         case 7:
           return coins >= 1000;
         case 8:
+        console.log("Total statistics entries:", userStatistics.statisticsEntriesCount);
           return userStatistics.statisticsEntriesCount >= 1;
         case 9:
           return userStatistics.statisticsEntriesCount >= 10;
@@ -152,7 +159,7 @@
 
 <section class="p-4 bg-white grid grid-cols-2 pb-16 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
   {#if loading}
-    <p class="text-center text-gray-500">Laden... Als dit lang duurt, ververs de pagina</p>
+    <p class="text-center text-gray-500">Laden... Als dit lang duurt, herlaad de pagina</p>
   {:else if filteredBadges.length > 0}
     {#each filteredBadges as badge}
       <div class="bg-white rounded-lg shadow-md overflow-hidden p-2 flex flex-col items-center aspect-w-1 aspect-h-1 border border-black">
