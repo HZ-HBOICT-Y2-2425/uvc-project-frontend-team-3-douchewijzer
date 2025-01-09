@@ -49,7 +49,7 @@ export const actions = {
                     milestoneAmount = milestoneAmount * 2;
                     coinValue = coinValue * 2;
 
-                    const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coinValue}`, {
+                    const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${updatedCoins}`, {
                         method: 'PUT',
                     });
 

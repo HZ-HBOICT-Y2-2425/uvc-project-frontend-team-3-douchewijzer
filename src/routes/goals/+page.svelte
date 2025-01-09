@@ -9,6 +9,7 @@ let showPopup = false;
 let goals = data;
 let userID = '';
 let name = '';
+let coins = 0;
 
 // @ts-ignore
   function claim(index) {
@@ -27,7 +28,7 @@ let name = '';
 </script>
 
 <VerifyToken />
-<DecodeToken bind:userID bind:name />
+<DecodeToken bind:userID bind:name bind:coins />
 
 
 <div class="flex gap-9 justify-center">

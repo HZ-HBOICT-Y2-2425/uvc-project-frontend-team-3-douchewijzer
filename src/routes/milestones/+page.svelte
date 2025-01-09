@@ -12,7 +12,7 @@
 </script>
 
 <VerifyToken />
-<DecodeToken bind:userID bind:name />
+<DecodeToken bind:userID bind:name/>
 
 <div class="flex gap-9 justify-left ml-6">
     <div>
