@@ -118,7 +118,7 @@
         case 6:
           return coins >= 3000;
         case 7:
-          return coins >= 1000;
+          return coins >= 10000;
         case 8:
         console.log("Total statistics entries:", userStatistics.statisticsEntriesCount);
           return userStatistics.statisticsEntriesCount >= 1;
