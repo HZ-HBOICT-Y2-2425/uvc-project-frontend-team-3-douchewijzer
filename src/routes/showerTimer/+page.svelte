@@ -1,5 +1,5 @@
 <script>
-    import Timer from '$lib/Timer.svelte';
+    import Timer from '$lib/timer.svelte';
     import VerifyToken from '$lib/VerifyToken.svelte';
     import { onMount } from 'svelte';
     import DecodeToken from '$lib/DecodeToken.svelte';
@@ -9,11 +9,10 @@
     let costs = 0;
     let co2 = 0;
     let temperature = 0;    
-    let lastTime = 0; // Add lastTime variable
+    let lastTime = 0; // lastTime variable
 
-    const handleTimerEnd = async () => {
+    const handleTimerEnd = () => {
         console.log('Timer is afgelopen!');
-        await saveShowerResult();
         liters = 0;
         costs = 0;
         co2 = 0;

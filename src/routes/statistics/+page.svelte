@@ -1,159 +1,300 @@
 <script>
-  import { onMount } from 'svelte';
-  import VerifyToken from '$lib/VerifyToken.svelte';
-  import SvelteTable from "svelte-table";
-    const rows = [
-        {
-            id: 1,
-            unit: "Water",
-            last_session: "32 L",
-            average: "35 L",
-            total: "1345 L",
-        },
-        {
-            id: 2,
-            unit: "Temperatuur",
-            last_session: "38°C",
-            average: "36°C",
-            total: "---",
-        },
-        {
-            id: 3,
-            unit: "Tijd",
-            last_session: "5:20",
-            average: "6:14",
-            total: "256",
-        },
-        {
-            id: 4,
-            unit: "Gas",
-            last_session: "0.23m³",
-            average: "0.29m³",
-            total: "27.923m³",
-        },
-        {
-            id: 5,
-            unit: "CO2",
-            last_session: "10,5g",
-            average: "12,2g",
-            total: "124g",
-        },
-        {
-            id: 6,
-            unit: "Kosten",
-            last_session: "€1,35",
-            average: "€1,67",
-            total: "€245",
-        },
-    ];
-    const columns = [
-        {
-            key: "unit",
-            title: "Eenheden",
-            value: (v) => v.unit,
-            sortable: true,
-            sortFunction: (a, b) => {
-                const sortOrder = [
-                    "Water",
-                    "Temperatuur",
-                    "Tijd",
-                    "Gas",
-                    "CO2",
-                    "Kosten",
-                ];
-                return sortOrder.indexOf(a.unit) - sortOrder.indexOf(b.unit);
-            },
-            filterOptions: (rows) => {
-                let units = {};
-                rows.forEach((row) => {
-                    let unit = row.unit;
-                    if (units[unit] === undefined)
-                        units[unit] = {
-                            name: `${unit}`,
-                            value: unit,
-                        };
+    import { onMount } from "svelte";
+    import VerifyToken from "$lib/VerifyToken.svelte";
+    import DecodeToken from "$lib/DecodeToken.svelte";
+    import Chart from "chart.js/auto";
+
+    let rows = [];
+    let userID = "";
+    let chart;
+    let waterChartData = [];
+    let waterChartLabels = [];
+    let timeChartData = [];
+    let timeChartLabels = [];
+    let CO2ChartData = [];
+    let CO2ChartLabels = [];
+    let temperatureChartData = [];
+    let temperatureChartLabels = [];
+    let kostenChartData = [];
+    let kostenChartLabels = [];
+
+    // Fetch the data from the backend when the component is mounted
+    onMount(async () => {
+        try {
+            const response = await fetch(
+                `http://localhost:3010/statistics/${userID}/`,
+                {
+                    mode: "cors",
+                },
+            );
+            if (response.ok) {
+                const data = await response.json();
+
+                const sortedData = data.sort(
+                    (a, b) => b.statisticsID - a.statisticsID,
+                );
+                const latestStatistics = sortedData[0];
+
+                let totalWaterUsage = 0;
+                let totalTemperature = 0;
+                let totalTime = 0;
+                let totalGasUsage = 0;
+                let totalCO2 = 0;
+                let totalCost = 0;
+
+                let countWater = 0;
+                let countTemperature = 0;
+                let countTime = 0;
+                let countGas = 0;
+                let countCO2 = 0;
+                let countCost = 0;
+
+                sortedData.forEach((stat) => {
+                    if (stat.waterUsage) {
+                        totalWaterUsage += parseFloat(stat.waterUsage);
+                        countWater++;
+                    }
+                    if (stat.temperature) {
+                        totalTemperature += parseFloat(stat.temperature);
+                        countTemperature++;
+                    }
+                    if (stat.lastTime) {
+                        totalTime += parseFloat(stat.lastTime);
+                        countTime++;
+                    }
+                    if (stat.gasUsage) {
+                        totalGasUsage += parseFloat(stat.gasUsage);
+                        countGas++;
+                    }
+                    if (stat.carbonEmission) {
+                        totalCO2 += parseFloat(stat.carbonEmission);
+                        countCO2++;
+                    }
+                    if (stat.currentCosts) {
+                        totalCost += parseFloat(stat.currentCosts);
+                        countCost++;
+                    }
                 });
-                // fix order
-                units = Object.entries(units)
-                    .sort()
-                    .reduce((o, [k, v]) => ((o[k] = v), o), {});
-                return Object.values(units);
+
+                const averageWater = countWater
+                    ? (totalWaterUsage / countWater).toFixed(2)
+                    : "---";
+                const averageTemperature = countTemperature
+                    ? (totalTemperature / countTemperature).toFixed(2)
+                    : "---";
+                const averageTime = countTime
+                    ? (totalTime / countTime).toFixed(2)
+                    : "---";
+                const averageGas = countGas
+                    ? (totalGasUsage / countGas).toFixed(2)
+                    : "---";
+                const averageCO2 = countCO2
+                    ? (totalCO2 / countCO2).toFixed(2)
+                    : "---";
+                const averageCost = countCost
+                    ? (totalCost / countCost).toFixed(2)
+                    : "---";
+
+                rows = [
+                    {
+                        id: 1,
+                        unit: "Water",
+                        last_session: `${latestStatistics.waterUsage || "---"} L`,
+                        average: `${averageWater} L`,
+                        total: `${totalWaterUsage.toFixed(2)} L`,
+                    },
+                    {
+                        id: 2,
+                        unit: "Temperatuur",
+                        last_session: `${latestStatistics.temperature || "---"}°C`,
+                        average: `${averageTemperature}°C`,
+                        total: "---",
+                    },
+                    {
+                        id: 3,
+                        unit: "Tijd",
+                        last_session: `${latestStatistics.lastTime || "---"} seconden`,
+                        average: `${averageTime} seconden`,
+                        total: `${totalTime.toFixed(2)} seconden`,
+                    },
+                    {
+                        id: 4,
+                        unit: "Gas",
+                        last_session: `${latestStatistics.gasUsage || "---"} m³`,
+                        average: `${averageGas} m³`,
+                        total: `${totalGasUsage.toFixed(2)} m³`,
+                    },
+                    {
+                        id: 5,
+                        unit: "CO2",
+                        last_session: `${latestStatistics.carbonEmission || "---"} g`,
+                        average: `${averageCO2} g`,
+                        total: `${totalCO2.toFixed(2)} g`,
+                    },
+                    {
+                        id: 6,
+                        unit: "Kosten",
+                        last_session: `€${latestStatistics.currentCosts || "---"}`,
+                        average: `€${averageCost}`,
+                        total: `€${totalCost.toFixed(2)}`,
+                    },
+                ];
+
+                const lastSevenEntries = sortedData.slice(0, 7).reverse();
+                waterChartData = lastSevenEntries.map(
+                    (stat) => parseFloat(stat.waterUsage) || 0,
+                );
+                waterChartLabels = lastSevenEntries.map(
+                    (stat) => `Beurt: ${stat.statisticsID}`,
+                );
+                timeChartData = lastSevenEntries.map(
+                    (stat) => parseFloat(stat.lastTime) || 0,
+                );
+                timeChartLabels = lastSevenEntries.map(
+                    (stat) => `Beurt: ${stat.statisticsID}`,
+                );
+                CO2ChartData = lastSevenEntries.map(
+                    (stat) => parseFloat(stat.carbonEmission) || 0,
+                );
+                CO2ChartLabels = lastSevenEntries.map(
+                    (stat) => `Beurt: ${stat.statisticsID}`,
+                );
+                temperatureChartData = lastSevenEntries.map(
+                    (stat) => parseFloat(stat.temperature) || 0,
+                );
+                temperatureChartLabels = lastSevenEntries.map(
+                    (stat) => `Beurt: ${stat.statisticsID}`,
+                );
+                kostenChartData = lastSevenEntries.map(
+                    (stat) => parseFloat(stat.currentCosts) || 0,
+                );
+                kostenChartLabels = lastSevenEntries.map(
+                    (stat) => `Beurt: ${stat.statisticsID}`,
+                );
+
+                createWaterUsageChart();
+            } else {
+                console.error("Failed to fetch data");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    });
+
+    function createWaterUsageChart() {
+        const ctx = document.getElementById("waterUsageChart").getContext("2d");
+
+        if (chart) {
+            chart.destroy();
+        }
+
+        chart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: waterChartLabels,
+                datasets: [
+                    {
+                        label: "Watergebruik (L)",
+                        data: waterChartData,
+                        borderColor: "rgba(75, 192, 192, 1)",
+                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1,
+                    },
+                    {
+                        label: "Tijd (s)",
+                        data: timeChartData,
+                        borderColor: "rgba(191, 75, 192, 1)",
+                        backgroundColor: "rgba(192, 75, 192, 0.2)",
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1,
+                    },
+                    {
+                        label: "CO2 (m2)",
+                        data: CO2ChartData,
+                        borderColor: "rgba(35, 75, 192, 1)",
+                        backgroundColor: "rgba(35, 75, 192, 0.2)",
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1,
+                    },
+                    {
+                        label: "Temperatuur (°C)",
+                        data: temperatureChartData,
+                        borderColor: "rgba(192, 75, 75, 1)",
+                        backgroundColor: "rgba(192, 75, 75, 0.2)",
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1,
+                    },
+                    {
+                        label: "Kosten (€)",
+                        data: kostenChartData,
+                        borderColor: "rgba(192, 192, 75, 1)",
+                        backgroundColor: "rgba(192, 192, 75, 0.2)",
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1,
+                    },
+                ],
             },
-            filterValue: (v) => v.unit,
-        },
-        {
-            key: "last_session",
-            title: "Laatste sessie",
-            value: (v) => v.last_session,
-        },
-        {
-            key: "average",
-            title: "Gemiddeld",
-            value: (v) => v.average,
-        },
-        {
-            key: "total",
-            title: "Totaal",
-            value: (v) => v.total,
-        },
-    ];
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: "Liters",
+                        },
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Afgelopen douchebeurten",
+                        },
+                    },
+                },
+            },
+        });
+    }
 </script>
 
 <VerifyToken />
-   
-<div class="table" style="margin-left:35%"><SvelteTable {columns} {rows}></SvelteTable></div>
+<DecodeToken bind:userID />
 
-<table class="htmlTable2 w-11/12 border-collapse bg-blue-200 rounded-3xl p-8 m-8 border border-black mb-72"
- style="margin-left: 20%; width: 60%; height: 40%;">
-    <thead class="columnNames2">
-        <tr>
-            <th class="border border-gray-300 p-2 bg-blue-900 text-white">Eenheden</th>
-            <th class="border border-gray-300 p-2 bg-blue-900 text-white">Laatste sessie</th>
-            <th class="border border-gray-300 p-2 bg-blue-900 text-white">Gemiddeld</th>
-            <th class="border border-gray-300 p-2 bg-blue-900 text-white">Totaal</th>
-        </tr>
-    </thead>
-    <tbody class="tableRow">
-        <tr class="rowRow">
-            <td class="border border-gray-300 p-2 bg-white">Water</td>
-            <td class="border border-gray-300 p-2 bg-white">32 L</td>
-            <td class="border border-gray-300 p-2 bg-white">35 L</td>
-            <td class="border border-gray-300 p-2 bg-white">1345 L</td>
-        </tr>
-        <tr>
-            <td class="border border-gray-300 p-2 bg-white">Temperatuur</td>
-            <td class="border border-gray-300 p-2 bg-white">38°C</td>
-            <td class="border border-gray-300 p-2 bg-white">36°C</td>
-            <td class="border border-gray-300 p-2 bg-white">---</td>
-        </tr>
-        <tr>
-            <td class="border border-gray-300 p-2 bg-white">Tijd</td>
-            <td class="border border-gray-300 p-2 bg-white">5:20</td>
-            <td class="border border-gray-300 p-2 bg-white">6:14</td>
-            <td class="border border-gray-300 p-2 bg-white">256</td>
-        </tr>
-        <tr>
-            <td class="border border-gray-300 p-2 bg-white">Gas</td>
-            <td class="border border-gray-300 p-2 bg-white">0.23m³</td>
-            <td class="border border-gray-300 p-2 bg-white">0.29m³</td>
-            <td class="border border-gray-300 p-2 bg-white">27.923m³</td>
-        </tr>
-        <tr>
-            <td class="border border-gray-300 p-2 bg-white">CO2</td>
-            <td class="border border-gray-300 p-2 bg-white">10,5g</td>
-            <td class="border border-gray-300 p-2 bg-white">12,2g</td>
-            <td class="border border-gray-300 p-2 bg-white">124g</td>
-        </tr>
-        <tr>
-            <td class="border border-gray-300 p-2 bg-white">Kosten</td>
-            <td class="border border-gray-300 p-2 bg-white">€1,35</td>
-            <td class="border border-gray-300 p-2 bg-white">€1,67</td>
-            <td class="border border-gray-300 p-2 bg-white">€245</td>
-        </tr>
-    </tbody>
-</table>
+<div class="container mx-auto px-4">
+    <table class="min-w-full bg-blue-200 rounded-3xl border border-black mb-8">
+        <thead class="bg-blue-900 text-white">
+            <tr>
+                <th class="border border-gray-300 p-2">Eenheden</th>
+                <th class="border border-gray-300 p-2">Laatste sessie</th>
+                <th class="border border-gray-300 p-2">Gemiddeld</th>
+                <th class="border border-gray-300 p-2">Totaal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {#each rows as row (row.id)}
+                <tr class="bg-white">
+                    <td class="border border-gray-300 p-2">{row.unit}</td>
+                    <td class="border border-gray-300 p-2"
+                        >{row.last_session}</td
+                    >
+                    <td class="border border-gray-300 p-2">{row.average}</td>
+                    <td class="border border-gray-300 p-2">{row.total}</td>
+                </tr>
+            {/each}
+        </tbody>
+    </table>
+</div>
 
-<div>
-    <img src="src\routes\statistics\a mock graph.png" alt="A mock graph" class="w-11/12 m-8" style="width: 60%; height: 40%; margin-top: -280px; margin-left: 20%;">
-    <img src="src\routes\statistics\a mock graph 2.png" alt="A mock graph" class="w-11/12 m-8" style="width: 60%; height: 40%; margin-bottom: 30%; margin-left: 20%;">
+<p class="container mx-auto px-4 mb-4">
+    Watergebruik over de afgelopen 7 douchebeurten:
+</p>
+
+<div class="container mx-auto px-4 mb-10">
+    <canvas id="waterUsageChart"></canvas>
 </div>
