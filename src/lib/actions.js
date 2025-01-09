@@ -1,4 +1,6 @@
 /** @type {import('./$types').PageLoad} */
+import averageWaterUsage from '$lib/StatisticsData.svelte';
+
 export async function updateProgress(userID, liters = null)  {
     try {
 
@@ -67,7 +69,9 @@ export async function updateProgress(userID, liters = null)  {
           } else if (milestone.dataType == 2) {
             if (milestone.milestoneProgress < milestone.milestoneAmount) {
                 let updatedProgress = milestone.milestoneProgress;
-                let savedWater = 100 - liters;
+                let savedWater = averageWaterUsage - liters;
+
+                console.log(averageWaterUsage);
 
                 if (savedWater > 0) {
                     updatedProgress = updatedProgress += savedWater;

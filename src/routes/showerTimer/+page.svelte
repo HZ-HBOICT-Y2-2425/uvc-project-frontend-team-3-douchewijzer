@@ -58,15 +58,6 @@
             console.log('Shower result saved:', data);
         } catch (error) {
             console.error('Error saving shower result:', error);
-
-            try {
-                const ID = userID;
-                await updateProgress(ID, liters);
-                return { success: true };
-            } catch (error) {
-              console.error(error);
-              return { success: false };
-            }
         }
     };
 
