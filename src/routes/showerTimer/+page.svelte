@@ -3,6 +3,7 @@
     import VerifyToken from '$lib/VerifyToken.svelte';
     import { onMount } from 'svelte';
     import DecodeToken from '$lib/DecodeToken.svelte';
+    import { updateProgress } from '$lib/actions';
 
     let liters = 0;
     let costs = 0;
@@ -58,6 +59,15 @@
             console.log('Shower result saved:', data);
         } catch (error) {
             console.error('Error saving shower result:', error);
+
+            try {
+                const ID = userID;
+                await updateProgress(ID);
+                return { success: true };
+            } catch (error) {
+              console.error(error);
+              return { success: false };
+            }
         }
     };
 

@@ -35,7 +35,7 @@ export const actions = {
         console.log(goalDescription)
     
         try {
-          const res = await fetch(`http://localhost:3010/goalsMilestones/goals?userID=${id}&goalDescription=${goalDescription}&goalProgress=0&goalAmount=${goalAmount}&coinValue=${coinValue}`, {
+          const res = await fetch(`http://localhost:3010/goalsMilestones/goals?userID=${id}&goalDescription=${goalDescription}&goalProgress=0&goalAmount=${goalAmount}&coinValue=${coinValue}&dataType=1`, {
             method: 'POST',
           });
     
@@ -80,49 +80,4 @@ export const actions = {
             return {succes: false, error: error.message};
         }
       },
-
-      updateProgress: async ({request}) => {
-        try {
-      const formData = await request.formData();
-      const userID = formData.get('userID');
-
-      if (!userID) {
-        return json({ success: false, message: 'UserID is required' }, { status: 400 });
-      }
-
-      const res = await fetch(`http://localhost:3010/goalsMilestones/goals?userID=${userID}`)
-
-      const goalText = await res.text(); if (!goalText) { throw new Error('Empty response body'); }
-
-      const goals = JSON.parse(goalText);
-
-      const updatedGoals = await Promise.all(
-        goals.map(async (goal) => {
-          if (goal.userID == userID)  {
-            if (goal.dataType == 1) {
-            let updatedProgress = goal.goalProgress;
-
-            updatedProgress += 1;
-
-            console.log(updatedProgress);
-
-            console.log(userID)
-
-            const putResponse = await fetch(`http://localhost:3010/goalsMilestones/goals/${goal.goalID}?goalProgress=${updatedProgress}`, {
-                method: 'PUT',
-                }); 
-              }
-            }
-        })
-      )
-
-      if (!res.ok) {
-        throw new Error(`Failed to add goal: ${res.statusText}`);
-      }
-    return { succes: true }  
-    } catch (error) {
-        console.error(error);
-        return {succes: false, error: error.message};
-    }
-  }
 }
