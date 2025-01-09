@@ -34,7 +34,7 @@ export async function updateProgress(userID, liters = null)  {
           } else if (goal.dataType == 2) {
             if (goal.goalProgress < goal.goalAmount) {
                 let updatedProgress = goal.goalProgress;
-                let savedWater = 100 - liters;
+                let savedWater = averageWaterUsage - liters;
 
                 if (savedWater > 0) {
                     updatedProgress = updatedProgress += savedWater;
@@ -70,8 +70,6 @@ export async function updateProgress(userID, liters = null)  {
             if (milestone.milestoneProgress < milestone.milestoneAmount) {
                 let updatedProgress = milestone.milestoneProgress;
                 let savedWater = averageWaterUsage - liters;
-
-                console.log(averageWaterUsage);
 
                 if (savedWater > 0) {
                     updatedProgress = updatedProgress += savedWater;

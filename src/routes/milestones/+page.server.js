@@ -38,6 +38,15 @@ export const actions = {
             let coinValue = formData.get('coinValue');
             const dataType = formData.get('dataType');
             let milestoneAmount = formData.get('milestoneAmount');
+
+            const resUsers = await fetch(`http://localhost:3010/users/${userID}`)
+            const userText = await resUsers.text(); if (!userText) { throw new Error('Empty response body'); }
+            const user = JSON.parse(userText);
+
+            const userCoins = parseInt(user.coins);
+            const newCoins = parseInt(coinValue);
+    
+            let coins = userCoins + newCoins;
         
             if (method !== 'PUT') {
             return { success: false, error: 'Invalid request method' };
@@ -49,7 +58,7 @@ export const actions = {
                     milestoneAmount = milestoneAmount * 2;
                     coinValue = coinValue * 2;
 
-                    const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${updatedCoins}`, {
+                    const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coins}`, {
                         method: 'PUT',
                     });
 
@@ -61,7 +70,7 @@ export const actions = {
                         method: 'DELETE',
                     });
 
-                    const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coinValue}`, {
+                    const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coins}`, {
                         method: 'PUT',
                     });
                 }
@@ -70,11 +79,11 @@ export const actions = {
                     milestoneAmount = milestoneAmount * 2;
                     coinValue = coinValue * 2;
 
-                    const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coinValue}`, {
+                    const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coins}`, {
                         method: 'PUT',
                     });
 
-                    const UpdateResponse = await fetch(`http://localhost:3010/goalsMilestones/milestones/${milestoneID}?coinValue=${coinValue}&milestoneAmount=${milestoneAmount}`, {
+                    const UpdateResponse = await fetch(`http://localhost:3010/goalsMilestones/milestones/${milestoneID}?coinValue=${coins}&milestoneAmount=${milestoneAmount}`, {
                         method: 'PUT'
                     })
                 } else {
@@ -82,7 +91,7 @@ export const actions = {
                         method: 'DELETE',
                     });
 
-                    const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coinValue}`, {
+                    const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coins}`, {
                         method: 'PUT',
                     });
                 } 

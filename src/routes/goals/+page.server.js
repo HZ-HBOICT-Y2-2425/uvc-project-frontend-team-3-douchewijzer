@@ -68,6 +68,15 @@ export const actions = {
             const goalID = formData.get('goalID');
             const userID = formData.get('userID');
             const coinValue = formData.get('coinValue');
+
+            const resUsers = await fetch(`http://localhost:3010/users/${userID}`)
+            const userText = await resUsers.text(); if (!userText) { throw new Error('Empty response body'); }
+            const user = JSON.parse(userText);
+
+            const userCoins = parseInt(user.coins);
+            const newCoins = parseInt(coinValue);
+    
+            let coins = userCoins + newCoins;
         
             if (method !== 'DELETE') {
             return { success: false, error: 'Invalid request method' };
@@ -77,7 +86,7 @@ export const actions = {
                 method: 'DELETE',
             });
 
-            const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coinValue}`, {
+            const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coins}`, {
                 method: 'PUT',
             });
 

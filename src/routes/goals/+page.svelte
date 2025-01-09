@@ -102,8 +102,8 @@ let coins = 0;
           <!-- Reward Points -->
           <div class="px-6 py-4 bg-gray-50 border-t border-blue-200 flex justify-between items-center">
             <div>
-              <span class="text-sm font-medium text-gray-600">Reward Points:</span>
-              <span class="ml-2 text-lg font-bold text-blue-700">{goal.coinValue} points</span>
+              <span class="text-sm font-medium text-gray-600">Reward Coins:</span>
+              <span class="ml-2 text-lg font-bold text-blue-700">{goal.coinValue} Coins</span>
             </div>
             <form method="POST" action="?/claimGoal">
               <input type="hidden" name="_method" value="DELETE" />
