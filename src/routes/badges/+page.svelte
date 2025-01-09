@@ -3,16 +3,15 @@
   import VerifyToken from "$lib/VerifyToken.svelte";
   import DecodeToken from "$lib/DecodeToken.svelte";
 
-  let userID = ""; // This will be populated from DecodeToken
+  let userID = ""; 
   let badges = [];
   let filteredBadges = [];
   let unfilteredBadges = [];
-  let userStatistics = null; // Define userStatistics globally
-  let userData = null; // To store user data like coins
+  let userStatistics = null; 
+  let userData = null; 
   let errorMessage = "";
-  let loading = true; // Set a loading state
+  let loading = true; 
 
-  // Fetch badges
   const fetchBadges = async () => {
     try {
       const response = await fetch("http://localhost:3010/badges");
@@ -26,7 +25,6 @@
     }
   };
 
-  // Fetch and process user statistics
   const fetchUserStatistics = async () => {
     try {
       const response = await fetch(
@@ -39,7 +37,6 @@
       if (response.ok) {
         const data = await response.json();
 
-        // Sort data by `statisticsID` to find the latest
         const sortedData = data.sort(
           (a, b) => b.statisticsID - a.statisticsID
         );
@@ -47,13 +44,11 @@
 
         const statisticsEntriesCount = data.length;
 
-        // Store the latest statistics globally
         userStatistics = latestStatistics;
 
         console.log("Processed statistics:", userStatistics);
         console.log("Total statistics entries:", statisticsEntriesCount);
 
-        // Pass the entries count to filterBadges to use it for badges 8, 9, and 10
         filterBadges(statisticsEntriesCount);
       } else {
         console.error("Failed to fetch user statistics");
@@ -65,7 +60,6 @@
     }
   };
 
-  // Fetch user data (including coins)
   const fetchUserData = async () => {
     try {
       const response = await fetch(`http://localhost:3010/users/${userID}`);
