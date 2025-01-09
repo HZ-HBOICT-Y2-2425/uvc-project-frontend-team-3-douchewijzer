@@ -10,6 +10,7 @@
   let userStatistics = null; // Define userStatistics globally
   let userData = null; // To store user data like coins
   let errorMessage = "";
+  let loading = true; // Set a loading state
 
   // Fetch badges
   const fetchBadges = async () => {
@@ -81,47 +82,58 @@
     }
   };
 
-  // Filter badges based on user statistics and coins
   const filterBadges = (statisticsEntriesCount) => {
-    if (!userStatistics || !userData || badges.length === 0) return;
+    if (!userStatistics || !userData || badges.length === 0) {
+      return;
+    }
+
+    const averageTemperature = parseFloat(userStatistics.averageTemperature);
+    const coins = userData.coins;
+
+    if (isNaN(averageTemperature) || isNaN(coins)) {
+      return;
+    }
 
     filteredBadges = badges.filter((badge) => {
       switch (badge.badgeID) {
         case 1:
-          return userStatistics.averageTemperature < 20;
+          return averageTemperature < 20;
         case 2:
-          return userStatistics.averageTemperature <= 26;
+          return averageTemperature <= 26;
         case 3:
-          return userStatistics.averageTemperature <= 20;
+          return averageTemperature <= 20;
         case 4:
-          return userStatistics.averageTemperature <= 16;
+          return averageTemperature <= 16;
         case 5:
-          return userData.coins > 1000;
+          return coins >= 1000;
         case 6:
-          return userData.coins > 3000;
+          return coins >= 3000;
         case 7:
-          return userData.coins > 1000;
+          return coins >= 1000;
         case 8:
-           return statisticsEntriesCount >= 1;
+          return statisticsEntriesCount >= 1;
         case 9:
-           return statisticsEntriesCount >= 10;
+          return statisticsEntriesCount >= 10;
         case 10:
-          return statisticsEntriesCount >= 100; 
+          return statisticsEntriesCount >= 100;
         default:
           return false;
       }
     });
 
-    // Badges that don't meet the requirements
     unfilteredBadges = badges.filter((badge) => !filteredBadges.includes(badge));
-
-    console.log("Filtered badges:", filteredBadges);
-    console.log("Unfiltered badges:", unfilteredBadges);
+    loading = false;
   };
 
-  // On mount, fetch the badges, statistics, and user data
   onMount(async () => {
-    await Promise.all([fetchBadges(), fetchUserStatistics(), fetchUserData()]);
+    try {
+      await Promise.all([fetchBadges(), fetchUserStatistics(), fetchUserData()]);
+    } catch (error) {
+      console.error("Error in fetching data during onMount:", error);
+      errorMessage = "An error occurred while fetching data.";
+    } finally {
+      loading = false;
+    }
   });
 </script>
 
@@ -129,7 +141,9 @@
 <DecodeToken bind:userID />
 
 <section class="p-4 bg-white grid grid-cols-2 pb-16 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-  {#if filteredBadges.length > 0}
+  {#if loading}
+    <p class="text-center text-gray-500">Laden...  Als dit lang duurt, ververs de pagina</p>
+  {:else if filteredBadges.length > 0}
     {#each filteredBadges as badge}
     <div class="bg-white rounded-lg shadow-md overflow-hidden p-2 flex flex-col items-center aspect-w-1 aspect-h-1 border border-black">
         <img src="{badge.badgeImage}" alt="Badge" class="w-full h-full object-cover mb-2" />
@@ -138,6 +152,6 @@
       </div>
     {/each}
   {:else}
-    <p class="text-center text-gray-500">{errorMessage || "No badges to display."}</p>
+    <p class="text-center text-gray-500">{errorMessage || "Herlaad alstublieft deze pagina"}</p>
   {/if}
 </section>
