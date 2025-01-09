@@ -1,7 +1,7 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
-    import { onMount } from 'svelte';
-    import DecodeToken from './DecodeToken.svelte';
+    import { createEventDispatcher } from "svelte";
+    import { onMount } from "svelte";
+    import DecodeToken from "./DecodeToken.svelte";
 
     let time = 0;
     let userTime = 0;
@@ -23,8 +23,8 @@
     const dispatch = createEventDispatcher();
 
     const baseCostPerMinute = 0.037; // Basis kosten per minuut bij 35 graden
-    const baseCO2PerMinute = 0.030; // Basis CO2-uitstoot per minuut bij 35 graden (kg)
-    const baseGasPerMinute = 0.020; // Basis gasverbruik per minuut bij 35 graden (m³)
+    const baseCO2PerMinute = 0.03; // Basis CO2-uitstoot per minuut bij 35 graden (kg)
+    const baseGasPerMinute = 0.02; // Basis gasverbruik per minuut bij 35 graden (m³)
 
     const calculateExponentialFactor = (temp) => {
         const baseTemp = 35;
@@ -33,12 +33,14 @@
 
     const fetchTimerSetting = async () => {
         try {
-            const response = await fetch(`http://localhost:3010/users/${userID}/preferences`); // Vervang door je API URL
+            const response = await fetch(
+                `http://localhost:3010/users/${userID}/preferences`,
+            ); // Vervang door je API URL
             const data = await response.json();
             time = data.timerSetting;
             userTime = data.timerSetting;
         } catch (error) {
-            console.error('Error fetching timer setting:', error);
+            console.error("Error fetching timer setting:", error);
         }
     };
 
@@ -73,33 +75,33 @@
         timer = null;
         if (dispatchEvent) {
             showNotification = true;
-            dispatch('timerEnd', {
+            dispatch("timerEnd", {
                 showerTime,
                 liters,
                 costs,
                 co2,
                 gas,
-                temperature
+                temperature,
             });
             await saveShowerResult(); // Roep de saveShowerResult functie aan
         }
-        dispatch('updateTime', { time: showerTime }); // Dispatch updateTime event with showerTime
+        dispatch("updateTime", { time: showerTime }); // Dispatch updateTime event with showerTime
     };
 
     const updateValues = () => {
         liters += 0.1; // 0.1 liter per seconde
         const factor = calculateExponentialFactor(temperature);
 
-        costs += baseCostPerMinute * factor / 60; // Kosten per seconde
-        co2 += baseCO2PerMinute * factor / 60; // CO2-uitstoot per seconde
-        gas += baseGasPerMinute * factor / 60; // Gasverbruik per seconde
+        costs += (baseCostPerMinute * factor) / 60; // Kosten per seconde
+        co2 += (baseCO2PerMinute * factor) / 60; // CO2-uitstoot per seconde
+        gas += (baseGasPerMinute * factor) / 60; // Gasverbruik per seconde
 
-        dispatch('updateLiters', { liters });
-        dispatch('updateCosts', { costs });
-        dispatch('updateCO2', { co2 });
-        dispatch('updateGas', { gas }); // Dispatch updateGas event
-        dispatch('updateTemperature', { temperature });
-        dispatch('updateTime', { time: showerTime }); // Ensure updateTime is dispatched here as well
+        dispatch("updateLiters", { liters });
+        dispatch("updateCosts", { costs });
+        dispatch("updateCO2", { co2 });
+        dispatch("updateGas", { gas }); // Dispatch updateGas event
+        dispatch("updateTemperature", { temperature });
+        dispatch("updateTime", { time: showerTime }); // Ensure updateTime is dispatched here as well
     };
 
     const resetTimer = (dispatchEvent = true) => {
@@ -114,11 +116,11 @@
         showEndOfTimerNotification = false; // Reset de extra melding
         endOfTimerNotificationShown = false; // Reset de variabele om de melding opnieuw te kunnen tonen
         isStarted = false;
-        dispatch('updateLiters', { liters });
-        dispatch('updateCosts', { costs });
-        dispatch('updateCO2', { co2 });
-        dispatch('updateGas', { gas }); // Dispatch updateGas event
-        dispatch('updateTemperature', { temperature });
+        dispatch("updateLiters", { liters });
+        dispatch("updateCosts", { costs });
+        dispatch("updateCO2", { co2 });
+        dispatch("updateGas", { gas }); // Dispatch updateGas event
+        dispatch("updateTemperature", { temperature });
     };
 
     const pauseTimer = () => {
@@ -165,102 +167,173 @@
     const saveShowerResult = async () => {
         console.log(`Last time: ${showerTime} seconds`); // Log lastTime in seconds
         try {
-            const response = await fetch(`http://localhost:3010/statistics/${userID}?temperature=${temperature}&currentCosts=${costs}&waterUsage=${liters}&lastTime=${showerTime}&carbonEmission=${co2}&gasUsage=${gas}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await fetch(
+                `http://localhost:3010/statistics/${userID}?temperature=${temperature}&currentCosts=${costs}&waterUsage=${liters}&lastTime=${showerTime}&carbonEmission=${co2}&gasUsage=${gas}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                },
+            );
 
             if (!response.ok) {
-                throw new Error('Failed to save shower result');
+                throw new Error("Failed to save shower result");
             }
 
             const data = await response.json();
-            console.log('Shower result saved:', data);
+            console.log("Shower result saved:", data);
         } catch (error) {
-            console.error('Error saving shower result:', error);
+            console.error("Error saving shower result:", error);
         }
     };
 
-    let userID = '';
-    let name = '';
+    let userID = "";
+    let name = "";
 </script>
 
 <DecodeToken bind:userID bind:name />
 
 {#if showTemperatureModal}
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
         <div class="bg-white p-6 rounded-lg shadow-lg text-center">
             <h2 class="text-xl font-semibold mb-4">Stel de temperatuur in</h2>
-            <input type="range" min="13" max="45" bind:value={temperature} class="w-full mb-2" />
-            <input type="number" min="13" max="45" bind:value={temperature} class="w-full text-center mb-4" />
-            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg" on:click={confirmTemperature}>Bevestigen</button>
+            <input
+                type="range"
+                min="13"
+                max="45"
+                bind:value={temperature}
+                class="w-full mb-2"
+            />
+            <input
+                type="number"
+                min="13"
+                max="45"
+                bind:value={temperature}
+                class="w-full text-center mb-4"
+            />
+            <button
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg"
+                on:click={confirmTemperature}>Bevestigen</button
+            >
         </div>
     </div>
 {/if}
 
 {#if showNotification}
-    <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50"></div>
-    <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-blue-600 p-10 rounded-2xl shadow-lg text-center z-50 w-4/5 max-w-lg">
+    <div
+        class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50"
+    ></div>
+    <div
+        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-blue-600 p-10 rounded-2xl shadow-lg text-center z-50 w-4/5 max-w-lg"
+    >
         <p class="text-2xl mb-5">De timer is afgelopen!</p>
-        <p class="text-lg mb-5">Tijd Gedoucht: {Math.floor(showerTime / 60)} min {showerTime % 60} sec</p>
+        <p class="text-lg mb-5">
+            Tijd Gedoucht: {Math.floor(showerTime / 60)} min {showerTime % 60} sec
+        </p>
         <p class="text-lg mb-2">Aantal Liter: {liters.toFixed(1)} L</p>
         <p class="text-lg mb-2">Kosten: €{costs.toFixed(2)}</p>
         <p class="text-lg mb-2">CO2 Emissie: {co2.toFixed(2)} kg</p>
         <p class="text-lg mb-5">Temperatuur: {temperature} °C</p>
-        <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={closeNotification}>Sluiten</button>
+        <button
+            class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800"
+            on:click={closeNotification}>Sluiten</button
+        >
     </div>
 {/if}
 
 {#if showEndOfTimerNotification}
-    <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50"></div>
-    <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-blue-600 p-10 rounded-2xl shadow-lg text-center z-50 w-4/5 max-w-lg">
-        <p class="text-2xl mb-5">Je timer is afgegaan druk op stop als je klaar bent met douchen</p>
-        <button class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800" on:click={() => { isManuallyStopped = true; stopTimer(); closeEndOfTimerNotification(); }}>Stop</button>
+    <div
+        class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50"
+    ></div>
+    <div
+        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-blue-600 p-10 rounded-2xl shadow-lg text-center z-50 w-4/5 max-w-lg"
+    >
+        <p class="text-2xl mb-5">
+            Je timer is afgegaan druk op stop als je klaar bent met douchen
+        </p>
+        <button
+            class="bg-blue-600 text-white border-none px-6 py-3 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800"
+            on:click={() => {
+                isManuallyStopped = true;
+                stopTimer();
+                closeEndOfTimerNotification();
+            }}>Stop</button
+        >
     </div>
 {/if}
 
-<div class="relative bg-custom-blue p-5 rounded-2xl w-80 mx-auto text-center text-white shadow-md cursor-pointer" on:click>
-    <button class="absolute top-2 right-2 bg-white text-blue-600 border-none px-2 py-1 text-sm rounded-md cursor-pointer shadow-sm hover:bg-blue-100" on:click|stopPropagation={toggleEditing}>
-        {isEditing ? 'Opslaan' : 'Pas aan'}
+<div
+    class="relative bg-custom-blue p-5 rounded-2xl w-80 mx-auto text-center text-white shadow-md cursor-pointer"
+    on:click
+>
+    <button
+        class="absolute top-2 right-2 bg-white text-blue-600 border-none px-2 py-1 text-sm rounded-md cursor-pointer shadow-sm hover:bg-blue-100"
+        on:click|stopPropagation={toggleEditing}
+    >
+        {isEditing ? "Opslaan" : "Pas aan"}
     </button>
     <h2 class="text-2xl mb-2 font-sans">Timer</h2>
     <div class="text-4xl font-bold tracking-wider font-mono mb-5">
-        {Math.floor(time / 60).toString().padStart(2, '0')}:
-        {(time % 60).toString().padStart(2, '0')}
+        {Math.floor(time / 60)
+            .toString()
+            .padStart(2, "0")}:
+        {(time % 60).toString().padStart(2, "0")}
     </div>
     {#if !isStarted}
-        <button 
-            class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100 mb-1" 
+        <button
+            class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100 mb-1"
             on:click|stopPropagation={startTimer}
             disabled={isEditing}
-            style:background-color={isEditing ? '#d3d3d3' : 'white'}
+            style:background-color={isEditing ? "#d3d3d3" : "white"}
         >
             Start
         </button>
     {/if}
     {#if isStarted}
-        <button class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100 mb-1" on:click|stopPropagation={() => { isManuallyStopped = true; stopTimer(); }}>
+        <button
+            class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100 mb-1"
+            on:click|stopPropagation={() => {
+                isManuallyStopped = true;
+                stopTimer();
+            }}
+        >
             Stop
         </button>
-        <button class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100 mb-1" on:click|stopPropagation={pauseTimer}>
-            {isPaused ? 'Hervatten' : 'Pauze'}
+        <button
+            class="bg-white text-blue-600 border-none px-5 py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100 mb-1"
+            on:click|stopPropagation={pauseTimer}
+        >
+            {isPaused ? "Hervatten" : "Pauze"}
         </button>
     {/if}
     {#if isEditing}
         <div class="flex justify-around mt-5">
-            <button class="bg-white text-blue-600 border-solid-3, px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(60)}>+1 min</button>
-            
-            <button class="bg-white text-blue-600 border-none px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(1)}>+1 sec</button>
+            <button
+                class="bg-white text-blue-600 border-solid-3, px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100"
+                on:click={() => adjustTime(60)}>+1 min</button
+            >
 
-            <button class="bg-white text-blue-600 border-none px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(-60)}>-1 min</button>
+            <button
+                class="bg-white text-blue-600 border-none px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100"
+                on:click={() => adjustTime(1)}>+1 sec</button
+            >
 
-            <button class="bg-white text-blue-600 border-none px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100" on:click={() => adjustTime(-1)}>-1 sec</button>
+            <button
+                class="bg-white text-blue-600 border-none px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100"
+                on:click={() => adjustTime(-60)}>-1 min</button
+            >
+
+            <button
+                class="bg-white text-blue-600 border-none px-7, padding-3, py-2 text-lg rounded-lg cursor-pointer shadow-md transition-colors duration-300 ease-in-out hover:bg-blue-100"
+                on:click={() => adjustTime(-1)}>-1 sec</button
+            >
         </div>
     {/if}
 </div>
 
 <style>
-    @import '../lib/app.css';
+    @import "../lib/app.css";
 </style>

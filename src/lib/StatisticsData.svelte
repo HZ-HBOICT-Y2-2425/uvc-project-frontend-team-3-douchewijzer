@@ -2,13 +2,9 @@
     import { onMount } from "svelte";
     import VerifyToken from "$lib/VerifyToken.svelte";
     import DecodeToken from "$lib/DecodeToken.svelte";
-    import Chart from "chart.js/auto";
 
     let rows = [];
     let userID = "";
-    let chart;
-    let waterChartData = [];
-    let waterChartLabels = [];
 
     // Fetch the data from the backend when the component is mounted
     onMount(async () => {
@@ -131,16 +127,6 @@
                         total: `€${totalCost.toFixed(2)}`,
                     },
                 ];
-
-                const lastSevenEntries = sortedData.slice(0, 7).reverse();
-                waterChartData = lastSevenEntries.map(
-                    (stat) => parseFloat(stat.waterUsage) || 0,
-                );
-                waterChartLabels = lastSevenEntries.map(
-                    (stat) => `Beurt: ${stat.statisticsID}`,
-                );
-
-                createWaterUsageChart();
             } else {
                 console.error("Failed to fetch data");
             }
@@ -148,51 +134,6 @@
             console.error("Error:", error);
         }
     });
-
-    function createWaterUsageChart() {
-        const ctx = document.getElementById("waterUsageChart").getContext("2d");
-
-        if (chart) {
-            chart.destroy();
-        }
-
-        chart = new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: waterChartLabels,
-                datasets: [
-                    {
-                        label: "Watergebruik (L)",
-                        data: waterChartData,
-                        borderColor: "rgba(75, 192, 192, 1)",
-                        backgroundColor: "rgba(75, 192, 192, 0.2)",
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.1,
-                    },
-                ],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: "Liters",
-                        },
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: "Afgelopen douchebeurten",
-                        },
-                    },
-                },
-            },
-        });
-    }
 </script>
 
 <VerifyToken />
@@ -221,12 +162,4 @@
             {/each}
         </tbody>
     </table>
-</div>
-
-<p class="container mx-auto px-4 mb-4">
-    Watergebruik over de afgelopen 7 douchebeurten:
-</p>
-
-<div class="container mx-auto px-4 mb-10">
-    <canvas id="waterUsageChart"></canvas>
 </div>

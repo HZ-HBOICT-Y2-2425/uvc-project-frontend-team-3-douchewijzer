@@ -2,6 +2,7 @@
     import { goto } from '$app/navigation'; // Import Svelte navigatie
     import Timer from '$lib/timer.svelte';
     import VerifyToken from '$lib/VerifyToken.svelte';
+    import StatisticsData from '$lib/StatisticsData.svelte';
     const navigateToShowerTimer = (event) => {
         // Alleen navigeren als de klik niet op een knop of interactief element was
         if (event.target === event.currentTarget) {
@@ -15,6 +16,8 @@
 </script>
 
 <VerifyToken />
+
+<StatisticsData />
 
 <Timer on:timerEnd={handleTimerEnd} on:click={navigateToShowerTimer} />
 
