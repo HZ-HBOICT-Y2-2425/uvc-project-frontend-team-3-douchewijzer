@@ -16,7 +16,7 @@
         "/leaderboard": "Leaderboard",
         "/statistics": "Statestieken",
         "/settings": "Settings",
-        "/badges": "Jou badges",
+        "/badges": "Jouw badges",
     };
 
     onMount(() => {
