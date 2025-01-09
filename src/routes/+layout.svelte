@@ -10,11 +10,11 @@
 
     // Definieer titels op basis van de routes
     const titles = {
-        "/": "Home",
-        "/showerTimer": "Shower Timer",
-        "/goals": "Goals",
+        "/": "Dashboard",
+        "/showerTimer": "Douche Timer",
+        "/goals": "Doelen",
         "/leaderboard": "Leaderboard",
-        "/statistics": "Statistics",
+        "/statistics": "Statestieken",
         "/settings": "Settings",
         "/badges": "Jou badges",
     };
