@@ -122,13 +122,13 @@
 <DecodeToken bind:userID bind:name />
 
 <div class="container mx-auto p-5">
-    <p class="text-4xl font-semibold mb-4">Hallo {name}!</p>
+    <p class="text-4xl font-semibold mb-4">Hallo, {name}!</p>
 
     <h2 class="text-2xl font-bold mt-6 mb-4">Account</h2>
     <div class="my-4 p-6 border rounded-lg shadow-md bg-white">
         {@html userImage}
         <div class="my-2 text-lg">Email: {email}</div>
-        <div class="my-2 text-lg">Coins: {coins}</div>
+        <div class="my-2 text-lg">Punten: {coins}</div>
         <button on:click={() => showEmojiPicker = !showEmojiPicker} class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 mb-4">Select Emoji</button>
         {#if showEmojiPicker}
             <emoji-picker on:emoji-click={handleEmojiSelect} class="light emojiPicker" style="--emoji-font-family: 'Apple Color Emoji', sans-serif, --background: fff;"></emoji-picker>
@@ -155,7 +155,7 @@
         </label>
     </div>
 
-    <h2 class="text-2xl font-bold mt-6 mb-4">Timer Setting</h2>
+    <h2 class="text-2xl font-bold mt-6 mb-4">Timer basis tijd</h2>
     <div class="my-4 p-6 border rounded-lg shadow-md bg-white">
         <div class="flex items-center space-x-2">
             <input type="number" class="border rounded p-2 w-16 text-center" bind:value={minutes} min="0" on:change={updateTimerSetting} />
@@ -165,7 +165,7 @@
         </div>
     </div>
 
-    <h2 class="text-2xl font-bold mt-6 mb-4">Latest Badges</h2>
+    <h2 class="text-2xl font-bold mt-6 mb-4">Badges</h2>
     <div class="my-4 p-6 border rounded-lg shadow-md bg-white">
         <LatestBadges {badges} />
     </div>

@@ -99,9 +99,9 @@
     });
 
   $: headerDescription = {
-    liters: "Liters of water used",
-    temperature: "Lowest temperature during shower",
-    time: "Shower duration",
+    liters: "Liters water verbruikt",
+    temperature: "Laagste temperaturen",
+    time: "Douche tijd",
   }[selectedSort];
 </script>
 
@@ -125,19 +125,19 @@
       class="font-medium py-2 px-4 rounded border border-[#89CFF3] {selectedSort === 'temperature' ? 'bg-[#007BFF] text-white' : 'bg-[#89CFF3]'}"
       on:click={() => (selectedSort = "temperature")}
     >
-      Temperature
+      Temperatuur
     </button>
     <button
       class="font-medium py-2 px-4 rounded border border-[#89CFF3] {selectedSort === 'time' ? 'bg-[#007BFF] text-white' : 'bg-[#89CFF3]'}"
       on:click={() => (selectedSort = "time")}
     >
-      Time
+      Tijd
     </button>
   </nav>
 
   <!-- Loading State -->
   {#if loading}
-    <div class="text-center py-4">Loading leaderboard...</div>
+    <div class="text-center py-4">Leaderboard laden...</div>
   {/if}
 
   <!-- Error State -->
