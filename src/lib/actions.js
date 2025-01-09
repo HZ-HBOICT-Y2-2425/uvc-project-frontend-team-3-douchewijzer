@@ -1,5 +1,3 @@
-import { data } from 'autoprefixer';
-
 /** @type {import('./$types').PageLoad} */
 export async function updateProgress(userID, liters = null)  {
     try {
@@ -14,7 +12,7 @@ export async function updateProgress(userID, liters = null)  {
   const goalText = await res.text(); if (!goalText) { throw new Error('Empty response body'); }
   const goals = JSON.parse(goalText);
 
-  const resMilestones =  await fetch(`http://localhost:3010/goalsMilestones/goals?userID=${userID}`)
+  const resMilestones =  await fetch(`http://localhost:3010/goalsMilestones/milestones?userID=${userID}`)
   const milestoneText = await resMilestones.text(); if (!milestoneText) { throw new Error('Empty response body'); }
   const milestones = JSON.parse(milestoneText);
 
@@ -54,22 +52,32 @@ export async function updateProgress(userID, liters = null)  {
   )
 
   const updatedMilestones = await Promise.all(
-    goals.map(async (milestone) => {
+    milestones.map(async (milestone) => {
       if (milestone.userID == userID)  {
         if (milestone.dataType == 1) {
             if (milestone.milestoneProgress < milestone.milestoneAmount) {
-                console.log("progress is geen probleem!")
         let updatedProgress = milestone.milestoneProgress;
+           updatedProgress += 1;
 
-        updatedProgress += 1;
-
-        console.log(updatedProgress);
-
-        const putResponse = await fetch(`http://localhost:3010/goalsMilestones/milestones/${milestone.milestoneID}?goalProgress=${updatedProgress}`, {
+        const putResponse = await fetch(`http://localhost:3010/goalsMilestones/milestones/${milestone.milestoneID}?milestoneProgress=${updatedProgress}`, {
             method: 'PUT',
+            
             }); 
-           }
-          }
+        }
+          } else if (milestone.dataType == 2) {
+            if (milestone.milestoneProgress < milestone.milestoneAmount) {
+                let updatedProgress = milestone.milestoneProgress;
+                let savedWater = 100 - liters;
+
+                if (savedWater > 0) {
+                    updatedProgress = updatedProgress += savedWater;
+                }
+
+                const putResponse = await fetch(`http://localhost:3010/goalsMilestones/milestones/${milestone.milestoneID}?milestoneProgress=${updatedProgress}`, {
+                    method: 'PUT',
+                }); 
+            }
+        }
         }
     })
   )

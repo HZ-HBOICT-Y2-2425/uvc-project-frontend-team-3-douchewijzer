@@ -9,7 +9,6 @@
     let userID = ''
     let name = ''
     let milestones = data;
-;
 </script>
 
 <VerifyToken />
@@ -33,7 +32,7 @@
           <div class="w-full max-w-md bg-white shadow-lg rounded-lg overflow-hidden">
             <!-- Goal Header -->
             <div class="px-6 py-4 border-b">
-              <h3 class="text-lg font-semibold text-gray-800">{milestone.milestoneID}: description</h3>
+              <h3 class="text-lg font-semibold text-gray-800">{milestone.milestoneID}: {milestone.milestoneDescription}</h3>
             </div>
         
             <!-- Progress Bar -->
@@ -60,6 +59,8 @@
                   <input type="hidden" name="milestoneID" value={milestone.milestoneID} />
                   <input type="hidden" name="userID" value={userID} />
                   <input type="hidden" name="coinValue" value={milestone.coinValue} />
+                  <input type="hidden" name="dataType" value={milestone.dataType} />
+                  <input type="hidden" name="milestoneAmount" value={milestone.milestoneAmount} />
                   <button
                   class="bg-blue-600 text-white border-none px-3 py-1 text-lg rounded-lg cursor-pointer mt-2 hover:bg-blue-800 float-right
                     {milestone.milestoneProgress < milestone.milestoneAmount ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-800'}"
@@ -74,7 +75,6 @@
             </div>
           </div>
         {/if}
-      <!-- </div> -->
       {/each}
     </div>
 {/if}

@@ -35,25 +35,58 @@ export const actions = {
             const method = formData.get('_method');
             const milestoneID = formData.get('milestoneID');
             const userID = formData.get('userID');
-            const coinValue = formData.get('coinValue');
+            let coinValue = formData.get('coinValue');
+            const dataType = formData.get('dataType');
+            let milestoneAmount = formData.get('milestoneAmount');
         
             if (method !== 'PUT') {
             return { success: false, error: 'Invalid request method' };
 
             }
 
-            const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coinValue}`, {
-                method: 'PUT',
-            });
+            if (dataType == 1) {
+                if (milestoneAmount < 100) {
+                    milestoneAmount = milestoneAmount * 2;
+                    coinValue = coinValue * 2;
 
-            const UpdateResponse = await fetch(`http://localhost:3010/goalsMilestones/milestones/${milestoneID}?coinValue=600&milestoneAmount=60`, {
-                method: 'PUT'
-            })
+                    const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coinValue}`, {
+                        method: 'PUT',
+                    });
 
-            if (!res.ok) {
-                throw new Error(`Failed to add goal: ${res.statusText}`);
-              }
-            return { succes: true }  
+                    const UpdateResponse = await fetch(`http://localhost:3010/goalsMilestones/milestones/${milestoneID}?coinValue=${coinValue}&milestoneAmount=${milestoneAmount}`, {
+                        method: 'PUT'
+                    })
+                } else {
+                    const deleteResponse = await fetch(`http://localhost:3010/goalsMilestones/milestones/${milestoneID}`, {
+                        method: 'DELETE',
+                    });
+
+                    const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coinValue}`, {
+                        method: 'PUT',
+                    });
+                }
+            } else if (dataType == 2) {
+                if (milestoneAmount < 10000) {
+                    milestoneAmount = milestoneAmount * 2;
+                    coinValue = coinValue * 2;
+
+                    const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coinValue}`, {
+                        method: 'PUT',
+                    });
+
+                    const UpdateResponse = await fetch(`http://localhost:3010/goalsMilestones/milestones/${milestoneID}?coinValue=${coinValue}&milestoneAmount=${milestoneAmount}`, {
+                        method: 'PUT'
+                    })
+                } else {
+                    const deleteResponse = await fetch(`http://localhost:3010/goalsMilestones/milestones/${milestoneID}`, {
+                        method: 'DELETE',
+                    });
+
+                    const putResponse = await fetch(`http://localhost:3010/users/${userID}?coins=${coinValue}`, {
+                        method: 'PUT',
+                    });
+                } 
+            }
         } catch (error) {
             console.error(error);
             return {succes: false, error: error.message};
