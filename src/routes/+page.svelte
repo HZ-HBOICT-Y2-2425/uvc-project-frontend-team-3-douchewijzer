@@ -24,7 +24,9 @@
 
 <Timer on:timerEnd={handleTimerEnd} on:click={navigateToShowerTimer} />
 
-<LatestBadges />
+<div class="p-5 border border-gray-300 rounded-lg bg-gray-100 mt-5">
+    <LatestBadges />
+</div>
 
 <style>
     @import '$lib/app.css';
