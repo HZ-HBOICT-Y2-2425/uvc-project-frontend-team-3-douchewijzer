@@ -167,7 +167,7 @@
 
     <h2 class="text-2xl font-bold mt-6 mb-4">Badges</h2>
     <div class="my-4 p-6 border rounded-lg shadow-md bg-white">
-        <LatestBadges {badges} />
+        <LatestBadges {userID} />
     </div>
     <button on:click={logout} class="bg-red-600 text-white px-4 py-2 rounded-md mt-4 mb-16">Logout</button>
 </div>
