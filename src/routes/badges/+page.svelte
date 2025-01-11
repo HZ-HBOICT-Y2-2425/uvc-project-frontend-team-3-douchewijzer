@@ -16,7 +16,6 @@
         throw new Error(`Failed to fetch owned items: ${response.statusText}`);
       }
       ownedItems = await response.json();
-      console.log("Owned items fetched:", ownedItems);
     } catch (error) {
       console.error("Error fetching owned items:", error);
       errorMessage = "Failed to load owned items.";
@@ -40,7 +39,6 @@
     try {
       const badgePromises = ownedItems.map(item => fetchBadgeDetails(item.badgeID));
       badges = await Promise.all(badgePromises);
-      console.log("Badges fetched:", badges);
     } catch (error) {
       console.error("Error fetching badges:", error);
       errorMessage = "Failed to load badges.";
