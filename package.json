@@ -12,6 +12,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/adapter-node": "^5.2.11",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"@types/jest": "^29.5.14",
@@ -25,6 +26,9 @@
 		"vite": "^5.0.3"
 	},
 	"dependencies": {
+		"chart.js": "^4.4.7",
+		"emoji-js": "^3.8.1",
+		"emoji-picker-element": "^1.26.0",
 		"jwt-decode": "^4.0.0",
 		"svelte-table": "^0.6.3"
 	}
