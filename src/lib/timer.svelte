@@ -183,7 +183,6 @@
             }
 
             const data = await response.json();
-            console.log("Shower result saved:", data);
         } catch (error) {
             console.error("Error saving shower result:", error);
         }  try {
