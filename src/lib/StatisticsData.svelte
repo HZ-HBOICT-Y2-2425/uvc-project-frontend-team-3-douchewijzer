@@ -105,27 +105,6 @@
                         average: `${averageTime} minuten`,
                         total: `${totalTime.toFixed(2)} minuten`,
                     },
-                    // {
-                    //     id: 4,
-                    //     unit: "Gas",
-                    //     last_session: `${latestStatistics.gasUsage || "---"} m³`,
-                    //     average: `${averageGas} m³`,
-                    //     total: `${totalGasUsage.toFixed(2)} m³`,
-                    // },
-                    // {
-                    //     id: 5,
-                    //     unit: "CO2",
-                    //     last_session: `${latestStatistics.carbonEmission || "---"} g`,
-                    //     average: `${averageCO2} g`,
-                    //     total: `${totalCO2.toFixed(2)} g`,
-                    // },
-                    // {
-                    //     id: 6,
-                    //     unit: "Kosten",
-                    //     last_session: `€${latestStatistics.currentCosts || "---"}`,
-                    //     average: `€${averageCost}`,
-                    //     total: `€${totalCost.toFixed(2)}`,
-                    // },
                 ];
             } else {
                 console.error("Failed to fetch data");
