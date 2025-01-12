@@ -107,10 +107,8 @@
                     },
                 ];
             } else {
-                console.error("Failed to fetch data");
             }
         } catch (error) {
-            console.error("Error:", error);
         }
     });
 </script>
