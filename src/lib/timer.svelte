@@ -166,7 +166,6 @@
     };
 
     const saveShowerResult = async () => {
-        console.log(`Last time: ${showerTime} seconds`); // Log lastTime in seconds
         try {
             const response = await fetch(
                 `http://localhost:3010/statistics/${userID}?temperature=${temperature}&currentCosts=${costs}&waterUsage=${liters}&lastTime=${showerTime}&carbonEmission=${co2}&gasUsage=${gas}`,
@@ -186,7 +185,6 @@
         } catch (error) {
             console.error("Error saving shower result:", error);
         }  try {
-                console.log("Go!");
                 const ID = userID;
                 await updateProgress(ID, liters);
                 return { success: true };
