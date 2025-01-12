@@ -3,7 +3,6 @@
     import VerifyToken from '$lib/VerifyToken.svelte';
     import { onMount } from 'svelte';
     import DecodeToken from '$lib/DecodeToken.svelte';
-    import { updateProgress } from '$lib/actions';
 
     let liters = 0;
     let costs = 0;
