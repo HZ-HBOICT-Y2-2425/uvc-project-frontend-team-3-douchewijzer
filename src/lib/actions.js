@@ -87,7 +87,6 @@ export async function updateProgress(userID, liters = null)  {
   }
 return { succes: true }  
 } catch (error) {
-    console.error(error);
     return {succes: false, error: error.message};
 }
 }
