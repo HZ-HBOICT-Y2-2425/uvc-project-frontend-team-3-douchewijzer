@@ -13,7 +13,6 @@
     };
 
     const handleTimerEnd = () => {
-        console.log('Timer is afgelopen!');
     };
 
 </script>

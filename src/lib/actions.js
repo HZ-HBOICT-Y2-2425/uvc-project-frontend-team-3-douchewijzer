@@ -8,8 +8,6 @@ export async function updateProgress(userID, liters = null)  {
     return json({ success: false, message: 'UserID is required' }, { status: 400 });
   }
 
-  console.log(liters);
-
   const res = await fetch(`http://localhost:3010/goalsMilestones/goals?userID=${userID}`)
   const goalText = await res.text(); if (!goalText) { throw new Error('Empty response body'); }
   const goals = JSON.parse(goalText);
@@ -89,7 +87,6 @@ export async function updateProgress(userID, liters = null)  {
   }
 return { succes: true }  
 } catch (error) {
-    console.error(error);
     return {succes: false, error: error.message};
 }
 }

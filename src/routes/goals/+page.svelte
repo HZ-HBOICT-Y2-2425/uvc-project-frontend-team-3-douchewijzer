@@ -11,16 +11,6 @@ let userID = '';
 let name = '';
 let coins = 0;
 
-// @ts-ignore
-  function claim(index) {
-       // Remove the goal at the specified index
-    goals = goals.filter((_, i) => i !== index);
-  };
-
-  function test() {
-    console.log(goals.props.data[0])
-  }
-
   const closePopUp = () => {
     showPopup = false;
   };

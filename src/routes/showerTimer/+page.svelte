@@ -3,7 +3,6 @@
     import VerifyToken from '$lib/VerifyToken.svelte';
     import { onMount } from 'svelte';
     import DecodeToken from '$lib/DecodeToken.svelte';
-    import { updateProgress } from '$lib/actions';
 
     let liters = 0;
     let costs = 0;
@@ -12,7 +11,6 @@
     let lastTime = 0; // lastTime variable
 
     const handleTimerEnd = () => {
-        console.log('Timer is afgelopen!');
         liters = 0;
         costs = 0;
         co2 = 0;
@@ -54,7 +52,6 @@
             }
 
             const data = await response.json();
-            console.log('Shower result saved:', data);
         } catch (error) {
             console.error('Error saving shower result:', error);
         }

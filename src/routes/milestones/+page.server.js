@@ -97,7 +97,6 @@ export const actions = {
                 } 
             }
         } catch (error) {
-            console.error(error);
             return {succes: false, error: error.message};
         }
       },

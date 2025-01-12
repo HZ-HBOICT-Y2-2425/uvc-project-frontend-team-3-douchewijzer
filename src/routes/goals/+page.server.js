@@ -17,7 +17,6 @@ export async function load( { fetch} ) {
             props: { data, } };
 
     } catch (error) {
-        console.error(error);
         return {
             data: [],
         };
@@ -55,7 +54,6 @@ export const actions = {
     
           return { success: true };
         } catch (error) {
-          console.error(error);
           return { success: false, error: error.message };
         }
       },
