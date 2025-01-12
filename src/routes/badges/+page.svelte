@@ -17,7 +17,6 @@
       }
       ownedItems = await response.json();
     } catch (error) {
-      console.error("Error fetching owned items:", error);
       errorMessage = "Failed to load owned items.";
     }
   };
@@ -30,7 +29,6 @@
       }
       return await response.json();
     } catch (error) {
-      console.error(`Error fetching badge details for badgeID ${badgeID}:`, error);
       errorMessage = "Failed to load badge details.";
     }
   };
@@ -40,7 +38,6 @@
       const badgePromises = ownedItems.map(item => fetchBadgeDetails(item.badgeID));
       badges = await Promise.all(badgePromises);
     } catch (error) {
-      console.error("Error fetching badges:", error);
       errorMessage = "Failed to load badges.";
     }
   };
@@ -50,7 +47,6 @@
       await fetchOwnedItems();
       await fetchBadges();
     } catch (error) {
-      console.error("Error in fetching data during onMount:", error);
       errorMessage = "An error occurred while fetching data.";
     } finally {
       loading = false; // Ensure loading is only set to false after all processing
