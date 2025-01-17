@@ -1,1 +1,0 @@
-let bug = "I am a bug";
